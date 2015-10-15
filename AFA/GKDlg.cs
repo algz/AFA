@@ -254,11 +254,11 @@ namespace AFA
                 MessageBox.Show("偏航角中请输入实数.");
                 return false;
             }
-            if (!Common.TestDoubleData(this.tbFLOWRATE.Text))
-            {
-                MessageBox.Show("发动机质量流量中请输入实数.");
-                return false;
-            }
+            //if (!Common.TestDoubleData(this.tbFLOWRATE.Text))
+            //{
+            //    MessageBox.Show("发动机质量流量中请输入实数.");
+            //    return false;
+            //}
             if (!Common.TestDoubleData(this.tbZMU.Text))
             {
                 MessageBox.Show("主旋翼前进比中请输入实数.");
@@ -317,7 +317,7 @@ namespace AFA
             this.tbFUZ.Text = _Data.FUZ;
             this.tbPITCH_V.Text = _Data.PITCH_V;
             this.tbYAW_V.Text = _Data.YAW_V;
-            this.tbFLOWRATE.Text = _Data.FLOWRATE;
+            //this.tbFLOWRATE.Text = _Data.FLOWRATE;
             this.tbZMU.Text = _Data.ZMU;
             TreeNode node = null;
             string strXYName = string.Empty;
@@ -357,9 +357,17 @@ namespace AFA
                     this.loadYXGridFormNodeTag(node);
                 }
             }
-            
-            
-         
+
+            #region 进气道
+            this.PRESS_OUT1.Text = _Data.inlet.PRESS_OUT1;
+            this.TEMP_OUT0.Text = _Data.inlet.TEMP_OUT0;
+            this.PRESS_IN1.Text = _Data.inlet.PRESS_IN1;
+            this.PRESS_IN0.Text = _Data.inlet.PRESS_IN0;
+            this.TEMP_IN0.Text = _Data.inlet.TEMP_IN0;
+
+            #endregion
+
+
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -413,7 +421,7 @@ namespace AFA
             _Data.FUZ = this.tbFUZ.Text;
             _Data.PITCH_V = this.tbPITCH_V.Text;
             _Data.YAW_V = this.tbYAW_V.Text;
-            _Data.FLOWRATE = this.tbFLOWRATE.Text;
+            //_Data.FLOWRATE = this.tbFLOWRATE.Text;
             _Data.ZMU = this.tbZMU.Text;
             _Data.NDISK = this.treeViewXY.Nodes.Count;
             _Data.XYData = new sXY[_Data.NDISK];
@@ -421,9 +429,18 @@ namespace AFA
             {
                 _Data.XYData[i] = (sXY)this.treeViewXY.Nodes[i].Tag; ;
             }
+
+            #region 进气道
+            _Data.inlet.PRESS_OUT1 = this.PRESS_OUT1.Text;
+            _Data.inlet.TEMP_OUT0=this.TEMP_OUT0.Text;
+            _Data.inlet.PRESS_IN1 = this.PRESS_IN1.Text;
+            _Data.inlet.PRESS_IN0 = this.PRESS_IN0.Text;
+            _Data.inlet.TEMP_IN0 = this.TEMP_IN0.Text;
             #endregion
 
-            if(originDir != destDir)
+            #endregion
+
+            if (originDir != destDir)
             {
                 if (originDir != null && Directory.Exists(originDir))
                 {
@@ -720,6 +737,18 @@ namespace AFA
         {
             e.DrawDefault = true; //我这里用默认颜色即可，只需要在TreeView失去焦点时选中节点仍然突显
             return;
+        }
+
+        private void chkModelJQD_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.chkModelJQD.Checked)
+            {
+                this.inletBox.Enabled = true;
+            }
+            else
+            {
+                this.inletBox.Enabled = false;
+            }
         }
 
 

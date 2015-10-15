@@ -124,8 +124,43 @@ namespace AFA
         /// 最大迭代数(用于续算)
         /// </summary>
         public string maxIterateNum;
+        /// <summary>
+        /// 进气道数据
+        /// </summary>
+        public Inlet inlet;
     }
 
+    /// <summary>
+    /// 进气道
+    /// </summary>
+    public struct Inlet
+    {
+        /// <summary>
+        /// 进气道出口静压(pa)
+        /// </summary>
+        public string PRESS_OUT1;
+        /// <summary>
+        /// 进气道出口总温(k)
+        /// </summary>
+        public string TEMP_OUT0;
+        /// <summary>
+        /// 喷管入口静压(pa)
+        /// </summary>
+        public string PRESS_IN1;
+        /// <summary>
+        /// 喷管入口总压(pa)
+        /// </summary>
+        public string PRESS_IN0;
+        /// <summary>
+        ///喷管入口总温(k)
+        /// </summary>
+        public string TEMP_IN0;
+
+    }
+
+    /// <summary>
+    /// 旋翼
+    /// </summary>
     public struct sXY
     {
         /// <summary>
@@ -395,47 +430,74 @@ namespace AFA
                         sw.WriteLine(data.MACH_INF);
                         sw.WriteLine(sp);
                         sw.WriteLine("FUSELAGE/ROTOR");
-                        sw.WriteLine("NDISK MU");
-                        sw.WriteLine(data.NDISK + sp + data.ZMU);
-                        sw.WriteLine("DISKX DISKY DISKZ DISKAK RADIUS CUTR TWSIT CHORD INVERSE");
-                        for (int j = 0; j < data.NDISK; j++)
-                        {
-                            sw.WriteLine(data.XYData[j].DISKX + sp + data.XYData[j].DISKY + sp
-                                + data.XYData[j].DISKZ + sp + data.XYData[j].DISKAK + sp
-                                + data.XYData[j].RADIUS + sp + data.XYData[j].RADIUSC + sp
-                                + data.XYData[j].TWSIT + sp + data.XYData[j].CHORD + sp
-                                + data.XYData[j].INVERSE);
-                        }
-                        sw.WriteLine("FLAP_0 FLAP_C1 FLAP_S1 PITCH_0 PITCH_S PITCH_C");
-                        for (int j = 0; j < data.NDISK; j++)
-                        {
-                            sw.WriteLine(data.XYData[j].FLAP_0 + sp + data.XYData[j].FLAP_C1 + sp
-                                + data.XYData[j].FLAP_S1 + sp + data.XYData[j].PITCH_0 + sp
-                                + data.XYData[j].PITCH_S + sp + data.XYData[j].PITCH_C);
-                        }
-                        sw.WriteLine("ALF_TPP HDISK N_BLADE OMIGA");
-                        for (int j = 0; j < data.NDISK; j++)
-                        {
-                            sw.WriteLine(data.XYData[j].ALF_TPP + sp + data.XYData[j].HDISK + sp
-                                + data.XYData[j].N_BLADE + sp + data.XYData[j].OMIGA);
-                        }
-                        sw.WriteLine("BLADE");
-                        for (int j = 0; j < data.NDISK; j++)
-                        {
-                            sw.WriteLine("#" + data.XYData[j].BLADE + "#");
 
-                            string[] yx = data.XYData[j].BLADE.Split(new Char[] { '|' });
-                            for (int k = 0; k < yx.Length; k++)
+                        #region 旋翼
+                        sw.WriteLine("NDISK MU");
+                        if (data.NDISK == 0)
+                        {
+                            sw.WriteLine("1  0");
+                            sw.WriteLine("DISKX DISKY DISKZ DISKAK RADIUS CUTR TWSIT CHORD INVERSE");
+                            sw.WriteLine("0  0  0  0  0  0  0  0  0  0");
+                            sw.WriteLine("FLAP_0 FLAP_C1 FLAP_S1 PITCH_0 PITCH_S PITCH_C");
+                            sw.WriteLine("0       0        0        0       0        0 ");
+                            sw.WriteLine("ALF_TPP HDISK N_BLADE OMIGA");
+                            sw.WriteLine("0        0    0       0");
+                            sw.WriteLine("BLADE");
+                            sw.WriteLine("0");
+                        }
+                        else
+                        {
+                            sw.WriteLine(data.NDISK + sp + data.ZMU);
+                            sw.WriteLine("DISKX DISKY DISKZ DISKAK RADIUS CUTR TWSIT CHORD INVERSE");
+                            for (int j = 0; j < data.NDISK; j++)
                             {
-                                string[] yxDGV = yx[k].Split(new Char[] { '#' });
-                                File.Copy(Common.yxFolder + yxDGV[2], strGKDir + yxDGV[2], true);
+                                sw.WriteLine(data.XYData[j].DISKX + sp + data.XYData[j].DISKY + sp
+                                    + data.XYData[j].DISKZ + sp + data.XYData[j].DISKAK + sp
+                                    + data.XYData[j].RADIUS + sp + data.XYData[j].RADIUSC + sp
+                                    + data.XYData[j].TWSIT + sp + data.XYData[j].CHORD + sp
+                                    + data.XYData[j].INVERSE);
+                            }
+                            sw.WriteLine("FLAP_0 FLAP_C1 FLAP_S1 PITCH_0 PITCH_S PITCH_C");
+                            for (int j = 0; j < data.NDISK; j++)
+                            {
+                                sw.WriteLine(data.XYData[j].FLAP_0 + sp + data.XYData[j].FLAP_C1 + sp
+                                    + data.XYData[j].FLAP_S1 + sp + data.XYData[j].PITCH_0 + sp
+                                    + data.XYData[j].PITCH_S + sp + data.XYData[j].PITCH_C);
+                            }
+                            sw.WriteLine("ALF_TPP HDISK N_BLADE OMIGA");
+                            for (int j = 0; j < data.NDISK; j++)
+                            {
+                                sw.WriteLine(data.XYData[j].ALF_TPP + sp + data.XYData[j].HDISK + sp
+                                    + data.XYData[j].N_BLADE + sp + data.XYData[j].OMIGA);
+                            }
+                            sw.WriteLine("BLADE");
+                            for (int j = 0; j < data.NDISK; j++)
+                            {
+                                sw.WriteLine("#" + data.XYData[j].BLADE + "#");
+
+                                string[] yx = data.XYData[j].BLADE.Split(new Char[] { '|' });
+                                for (int k = 0; k < yx.Length; k++)
+                                {
+                                    string[] yxDGV = yx[k].Split(new Char[] { '#' });
+                                    File.Copy(Common.yxFolder + yxDGV[2], strGKDir + yxDGV[2], true);
+                                }
                             }
                         }
+                        
                         sw.WriteLine(sp);
+                        #endregion
+
+                        #region 进气道
                         sw.WriteLine("AIRINTAKE");
-                        sw.WriteLine("FLOWRATE");
-                        sw.WriteLine(data.FLOWRATE);
+                        sw.WriteLine("PRESS_OUT1   TEMP_OUT0");
+                        sw.WriteLine(data.inlet.PRESS_OUT1 + " " + data.inlet.TEMP_OUT0);
+                        sw.WriteLine("PRESS_IN1  PRESS_IN0  TEMP_IN0");
+                        sw.WriteLine(data.inlet.PRESS_IN1 + " " + data.inlet.PRESS_IN0 + " " + data.inlet.TEMP_IN0);
+                        //sw.WriteLine("FLOWRATE");
+                        //sw.WriteLine(data.FLOWRATE);
                         sw.WriteLine(sp);
+                        #endregion
+
                         sw.WriteLine("COMPUTE_PARA");
                         sw.WriteLine("PITCH_V YAW_V RE");
                         sw.WriteLine(data.PITCH_V + sp + data.YAW_V + sp + data.RE);

@@ -181,7 +181,7 @@ namespace AFA
                 //dlg.SetData(ref selNode);
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
-                    sGK data = (sGK)selNode.Tag;
+                    //sGK data = (sGK)selNode.Tag;
                     //MessageBox.Show(data.Name);
                 }
 
@@ -687,6 +687,29 @@ namespace AFA
                         xyelm.InnerText = data.XYData[j].BLADE;
                         velm.AppendChild(xyelm);
                     }
+
+                    #region 进气道
+                    velm = doc.CreateElement("PRESS_OUT1");
+                    velm.InnerText = data.inlet.PRESS_OUT1;
+                    partelm.AppendChild(velm);
+
+                    velm = doc.CreateElement("TEMP_OUT0");
+                    velm.InnerText = data.inlet.TEMP_OUT0;
+                    partelm.AppendChild(velm);
+
+                    velm = doc.CreateElement("PRESS_IN1");
+                    velm.InnerText = data.inlet.PRESS_IN1;
+                    partelm.AppendChild(velm);
+
+                    velm = doc.CreateElement("PRESS_IN0");
+                    velm.InnerText = data.inlet.PRESS_IN0;
+                    partelm.AppendChild(velm);
+
+                    velm = doc.CreateElement("TEMP_IN0");
+                    velm.InnerText = data.inlet.TEMP_IN0;
+                    partelm.AppendChild(velm);
+
+                    #endregion
                 }
             }
             subelm = doc.CreateElement("求解器设置");
@@ -808,6 +831,15 @@ namespace AFA
                         data.XYData[j].MU = GetNodeText(root, "工况", NumName, XYName, "MU");
                         data.XYData[j].BLADE = GetNodeText(root, "工况", NumName, XYName, "BLADE");
                     }
+
+                    #region 进气道
+                    data.inlet.PRESS_OUT1 = GetNodeText(root, "工况", NumName, "PRESS_OUT1", string.Empty);
+                    data.inlet.TEMP_OUT0 = GetNodeText(root, "工况", NumName, "TEMP_OUT0", string.Empty);
+                    data.inlet.PRESS_IN1 = GetNodeText(root, "工况", NumName, "PRESS_IN1", string.Empty);
+                    data.inlet.PRESS_IN0 = GetNodeText(root, "工况", NumName, "PRESS_IN0", string.Empty);
+                    data.inlet.TEMP_IN0 = GetNodeText(root, "工况", NumName, "TEMP_IN0", string.Empty);
+                    #endregion
+
                     AFATreeNode node = null;
                     node = new AFATreeNode(data.Name, TreeNodeType.nodeGKCase);
                     node.Name = data.Name;
@@ -1006,11 +1038,6 @@ namespace AFA
 
             
         }
-
-
-
-
-
 
     }
 }

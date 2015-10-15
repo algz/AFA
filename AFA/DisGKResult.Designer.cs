@@ -202,6 +202,7 @@
             this.label7.Size = new System.Drawing.Size(11, 12);
             this.label7.TabIndex = 27;
             this.label7.Text = "0";
+            this.label7.Visible = false;
             // 
             // label6
             // 
@@ -211,6 +212,7 @@
             this.label6.Size = new System.Drawing.Size(11, 12);
             this.label6.TabIndex = 26;
             this.label6.Text = "0";
+            this.label6.Visible = false;
             // 
             // xyllTxt
             // 
@@ -247,6 +249,7 @@
             this.label13.Size = new System.Drawing.Size(113, 12);
             this.label13.TabIndex = 18;
             this.label13.Text = "进气道总压恢复系数";
+            this.label13.Visible = false;
             // 
             // label12
             // 
@@ -256,6 +259,7 @@
             this.label12.Size = new System.Drawing.Size(113, 12);
             this.label12.TabIndex = 17;
             this.label12.Text = "进气道压力畸变系数";
+            this.label12.Visible = false;
             // 
             // label8
             // 
