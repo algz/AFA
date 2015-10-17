@@ -84,6 +84,7 @@ namespace AFA
             }
 
             this.tabPage1.Controls.Remove(this.meshDisControl1);
+            this.showGKBtn.Enabled = false;
             this.meshDisControl1 = new MeshDisLib.MeshDisControl();
             this.meshDisControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.meshDisControl1.Location = new System.Drawing.Point(3, 3);
@@ -175,14 +176,14 @@ namespace AFA
         private void tsEditGK_Click(object sender, EventArgs e)
         {
             AFATreeNode selNode = (AFATreeNode)this.treeView1.SelectedNode;
+            
             if (selNode != null)
             {
                 GKDlg dlg = new GKDlg(true, selNode);
                 //dlg.SetData(ref selNode);
                 if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
-                    //sGK data = (sGK)selNode.Tag;
-                    //MessageBox.Show(data.Name);
+                    refreshChart(selNode);
                 }
 
             }
@@ -202,7 +203,7 @@ namespace AFA
                 node.Remove();
                 if (Directory.Exists(Common.prjName +Path.DirectorySeparatorChar+ node.Text))
                 {
-                    Directory.Delete(Common.prjName +Path.DirectorySeparatorChar+ node.Text);
+                    Directory.Delete(Common.prjName +Path.DirectorySeparatorChar+ node.Text,true);
                 }
                 
 
@@ -302,6 +303,7 @@ namespace AFA
         private void callBack(string msg)
         {
             this.meshDisControl1.MeshDis(msg);
+            this.showGKBtn.Enabled = true;
             this.cmd.HideOpaqueLayer();
         }
 
@@ -888,6 +890,8 @@ namespace AFA
                     Common.MESHLOCATION = strMsh;
 
                     this.meshDisControl1.MeshDis(Common.MESHLOCATION);
+                    this.showGKBtn.Enabled = true;
+                    this.showGKBtn.Checked = true;
                 }        
 
                 //打开计算结果页面
@@ -1039,5 +1043,66 @@ namespace AFA
             
         }
 
+        private void showGKBtn_CheckedChanged(object sender, EventArgs e)
+        {
+            this.meshDisControl1.showEdge(this.showGKBtn.Checked);
+        }
+
+        private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node.Parent != null && e.Node.Parent.Text == "工况设置" && e.Node.Nodes.Count == 0)
+            {
+                tsEditGK_Click(sender, null);
+            }
+            
+        }
+
+        private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node.Parent != null && e.Node.Parent.Text == "工况设置" && e.Node.Nodes.Count == 0)
+            {
+                refreshChart((AFATreeNode)e.Node);
+            }
+            
+        }
+
+        /// <summary>
+        /// 工况刷新图表
+        /// </summary>
+        /// <param name="selNode"></param>
+        private void refreshChart(AFATreeNode selNode)
+        {
+            //AFATreeNode selNode = (AFATreeNode)this.treeView1.SelectedNode;
+            if (selNode != null&&selNode.Tag!=null)
+            {
+                sGK gk = (sGK)selNode.Tag;
+                if (gk.MODEL == "1" && gk.MODEL == "101")
+                {
+                    this.meshDisControl1.addRotor(null);
+                }
+                else
+                {
+                    if (gk.NDISK != 0)
+                    {
+                        double[,] rotor = new double[gk.NDISK, 7];
+                        for (int i = 0; i < gk.NDISK; i++)
+                        {
+                            rotor[i, 0] = Convert.ToDouble(gk.XYData[i].DISKX);
+                            rotor[i, 1] = Convert.ToDouble(gk.XYData[i].DISKY);
+                            rotor[i, 2] = Convert.ToDouble(gk.XYData[i].DISKZ);
+                            rotor[i, 3] = Convert.ToDouble(gk.XYData[i].RADIUS);
+                            rotor[i, 4] = Convert.ToDouble(gk.XYData[i].HDISK);
+                            rotor[i, 5] = Convert.ToDouble(gk.XYData[i].DISKAK);
+                            rotor[i, 6] = Convert.ToDouble(gk.XYData[i].ALF_TPP);
+
+                        }
+
+                        this.meshDisControl1.addRotor(rotor);
+                    }
+                }
+                
+            }
+            
+        }
     }
 }

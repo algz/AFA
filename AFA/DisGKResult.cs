@@ -180,41 +180,50 @@ namespace AFA
                 catch(Exception e)
                 {
                     MessageBox.Show(e.Message);
+                    stopCalculateBtn_Click(null, null);
+                    
                 }
             }
         }
 
         public void drawGraph(string[] arr)
         {
-            if (arr == null || arr.Length == 0)
+            try
             {
-                return;
-            }
-            //string[] arr = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            this.maxLine = Convert.ToInt64(arr[0]);
-            this.mdcyTxt.Text = arr.Length >= 2 ? arr[1] : "0";
-            this.jsslTxt.Text = arr.Length >= 3 ? arr[2] : "0";
-            this.jszlTxt.Text = arr.Length >= 4 ? arr[3] : "0";
-            this.xyllTxt.Text = arr.Length >= 5 ? arr[4] : "0";
-            for (int i = 1; i < arr.Length; i++)
-            {
-                double axisY = double.Parse(arr[i], System.Globalization.NumberStyles.Any);
-                if (!this.pointYCollection.ContainsKey(i - 1))
+                if (arr == null || arr.Length == 0)
                 {
-                    pointYCollection.Add(i - 1, new PointPairList());
+                    return;
                 }
-                this.pointYCollection[i - 1].Add(Convert.ToDouble(arr[0]), Convert.ToDouble(axisY));
+                //string[] arr = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                this.maxLine = Convert.ToInt64(arr[0]);
+                this.mdcyTxt.Text = arr.Length >= 2 ? arr[1] : "0";
+                this.jsslTxt.Text = arr.Length >= 3 ? arr[2] : "0";
+                this.jszlTxt.Text = arr.Length >= 4 ? arr[3] : "0";
+                this.xyllTxt.Text = arr.Length >= 5 ? arr[4] : "0";
+                for (int i = 1; i < arr.Length; i++)
+                {
+                    double axisY = double.Parse(arr[i], System.Globalization.NumberStyles.Any);
+                    if (!this.pointYCollection.ContainsKey(i - 1))
+                    {
+                        pointYCollection.Add(i - 1, new PointPairList());
+                    }
+                    this.pointYCollection[i - 1].Add(Convert.ToDouble(arr[0]), Convert.ToDouble(axisY));
+                }
+
+
+                //画到zedGraphControl1控件中，此句必加
+                zedGraphControl1.AxisChange();
+                //重绘控件
+                Refresh();
+
+                this.iterateNum.Text = this.maxLine.ToString();
+                this.currentGK.maxIterateNum = this.maxLine.ToString();
+                MainForm.GKNode.Nodes[this.page.Text].Tag = this.currentGK;
             }
-
-
-            //画到zedGraphControl1控件中，此句必加
-            zedGraphControl1.AxisChange();
-            //重绘控件
-            Refresh();
-
-            this.iterateNum.Text = this.maxLine.ToString();
-            this.currentGK.maxIterateNum = this.maxLine.ToString();
-            MainForm.GKNode.Nodes[this.page.Text].Tag = this.currentGK;
+            catch
+            {
+            }
+            
         }
 
 

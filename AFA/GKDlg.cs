@@ -180,11 +180,11 @@ namespace AFA
                 return false;
             }
 
-            if (this.dgvYX.Rows.Count==0)
-            {
-                 MessageBox.Show("请添加翼型.");
-                return false;
-            }
+            //if (this.dgvYX.Rows.Count==0)
+            //{
+            //     MessageBox.Show("请添加翼型.");
+            //    return false;
+            //}
             return true;
         }
 
@@ -264,7 +264,7 @@ namespace AFA
                 MessageBox.Show("主旋翼前进比中请输入实数.");
                 return false;
             }
-            if (this.chkModelXY.Checked&&this.treeViewXY.Nodes.Count==0)
+            if (this.chkModelXY.Checked&&this.XYlistView.Items.Count==0)
             {
                 MessageBox.Show("请添加旋翼.");
                 return false;
@@ -319,12 +319,13 @@ namespace AFA
             this.tbYAW_V.Text = _Data.YAW_V;
             //this.tbFLOWRATE.Text = _Data.FLOWRATE;
             this.tbZMU.Text = _Data.ZMU;
-            TreeNode node = null;
             string strXYName = string.Empty;
             for (int i = 0; i < _Data.NDISK; i++)
             {
                 strXYName = "旋翼" + i.ToString();
-                node = new TreeNode(strXYName);
+                ListViewItem item=new ListViewItem();
+                item.Text=strXYName;
+                //node = new TreeNode(strXYName);
 
                 sXY dataXY = new sXY();
                 dataXY.ALF_TPP = _Data.XYData[i].ALF_TPP;
@@ -348,13 +349,16 @@ namespace AFA
                 dataXY.RADIUSC = _Data.XYData[i].RADIUSC;
                 dataXY.TWSIT = _Data.XYData[i].TWSIT;
                 dataXY.BLADE = _Data.XYData[i].BLADE;
-                node.Tag = dataXY;
-                this.treeViewXY.Nodes.Add(node);
+
+                item.Tag = dataXY;
+                //this.treeViewXY.Nodes.Add(node);
+                this.XYlistView.Items.Add(item);
                 if (i == 0)
                 {
                     //默认加载首结点
-                    this.treeViewXY.SelectedNode = node;
-                    this.loadYXGridFormNodeTag(node);
+                    //this.treeViewXY.SelectedNode = node;
+                    item.Selected=true;
+                    this.loadYXGridFormNodeTag((sXY)item.Tag);
                 }
             }
 
@@ -367,7 +371,15 @@ namespace AFA
 
             #endregion
 
-
+            bool flag = true;
+            if (this.XYlistView.Items.Count == 0)
+            {
+                flag = false;
+            }
+            this.btnEditXY.Enabled = flag;
+            this.btnDelXY.Enabled = flag;
+            this.gbYSJ.Enabled = flag;
+            this.groupBox1.Enabled = flag;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -377,18 +389,9 @@ namespace AFA
                 return;
             }
 
-            string originDir =(_Data.Name==null?null:(Common.prjName + Path.DirectorySeparatorChar + _Data.Name));
-            string destDir = Common.prjName + Path.DirectorySeparatorChar + this.tbName.Text;
-
-
-            //检查工况名是否重复
-            if (originDir!=destDir&&Directory.Exists(destDir))
-            {
-                MessageBox.Show("工况名重复");
-                return;
-            }
-
             #region 存储数据
+            
+
             _Data.Name = this.tbName.Text;
             if (!this.chkModelXY.Checked && !this.chkModelJQD.Checked)
             {
@@ -423,11 +426,14 @@ namespace AFA
             _Data.YAW_V = this.tbYAW_V.Text;
             //_Data.FLOWRATE = this.tbFLOWRATE.Text;
             _Data.ZMU = this.tbZMU.Text;
-            _Data.NDISK = this.treeViewXY.Nodes.Count;
+
+            btnEditXY_Click(null, null);
+
+            _Data.NDISK = this.XYlistView.Items.Count;// this.treeViewXY.Nodes.Count;
             _Data.XYData = new sXY[_Data.NDISK];
             for (int i = 0; i < _Data.NDISK; i++)
             {
-                _Data.XYData[i] = (sXY)this.treeViewXY.Nodes[i].Tag; ;
+                _Data.XYData[i] = (sXY)this.XYlistView.Items[i].Tag;// this.treeViewXY.Nodes[i].Tag; ;
             }
 
             #region 进气道
@@ -439,6 +445,16 @@ namespace AFA
             #endregion
 
             #endregion
+
+            string originDir = (_Data.Name == null ? null : (Common.prjName + Path.DirectorySeparatorChar + _Data.Name));
+            string destDir = Common.prjName + Path.DirectorySeparatorChar + this.tbName.Text;
+
+            //检查工况名是否重复
+            if (originDir != destDir && Directory.Exists(destDir))
+            {
+                MessageBox.Show("工况名重复");
+                return;
+            }
 
             if (originDir != destDir)
             {
@@ -470,8 +486,15 @@ namespace AFA
                 m_Node.Name = m_Node.Text = _Data.Name;
             }
 
-            this.DialogResult = DialogResult.OK;
+            Button btn = (Button)sender;
+            if (btn.Name == "btnOK")
+            {
+                this.DialogResult = DialogResult.OK;
+            }
+            
             //Common.SaveToCFDIN(MainForm.GKNode.Nodes);
+
+            
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -500,8 +523,16 @@ namespace AFA
                 return;
             }
 
-            TreeNode node = null;
-            node = new TreeNode("旋翼"+this.treeViewXY.Nodes.Count.ToString());
+           
+
+            //TreeNode node = null;
+            //node = new TreeNode("旋翼"+this.treeViewXY.Nodes.Count.ToString());
+
+            ListViewItem item = new ListViewItem();
+            //item.BackColor = Color.LightSteelBlue;
+            item.Text = "旋翼" + this.XYlistView.Items.Count;
+            
+
             sXY dataXY = new sXY();
             dataXY.ALF_TPP = this.tbALF_TPP.Text;
             dataXY.CHORD = this.tbCHORD.Text;
@@ -545,15 +576,29 @@ namespace AFA
                     dataXY.BLADE = dataXY.BLADE + "|";
                 }
             }
-            node.Tag = dataXY;
-            this.treeViewXY.Nodes.Add(node);
+
+            item.Tag = dataXY;
+            this.XYlistView.Items.Add(item);
+
+            this.btnEditXY.Enabled = true;
+            this.btnDelXY.Enabled = true;
+            this.gbYSJ.Enabled = true;
+            this.groupBox1.Enabled = true;
         }
 
         private void btnEditXY_Click(object sender, EventArgs e)
         {
-             TreeNode selNode = this.treeViewXY.SelectedNode;
-             if (selNode != null)
+            if (!this.chkModelXY.Checked)
+            {
+                //_Data.NDISK = 0;
+                //_Data.XYData = null;
+                return;
+            }
+            
+             
+             if (this.XYlistView.SelectedItems.Count!=0)
              {
+                 
                  if (!checkXY())
                  {
                      return;
@@ -605,25 +650,118 @@ namespace AFA
                          dataXY.BLADE = dataXY.BLADE + "|";
                      }
                  }
-                 selNode.Tag = dataXY;
+
+                 //selNode.Tag = dataXY;
+                 this.XYlistView.SelectedItems[0].Tag=dataXY;
              }
 
         }
 
+        /// <summary>
+        /// 保存旋翼控件到结构体对象
+        /// </summary>
+        /// <returns></returns>
+        private sXY saveXYControlToObject()
+        {
+            sXY dataXY = new sXY();
+            if (!this.chkModelXY.Checked)
+            {
+                //_Data.NDISK = 0;
+                //_Data.XYData = null;
+                return dataXY;
+            }
+            //TreeNode selNode = this.treeViewXY.SelectedNode;
+
+            //if (selNode != null || this.XYlistView.SelectedItems.Count != 0)
+            //{
+
+                if (!checkXY())
+                {
+                    return dataXY;
+                }
+
+                
+                dataXY.ALF_TPP = this.tbALF_TPP.Text;
+                dataXY.CHORD = this.tbCHORD.Text;
+                //switch (this.cmbDISKAK.SelectedIndex)
+                //{
+                //    case 0:
+                //        dataXY.DISKAK=this.cmbDISKAK.se
+                //}
+                dataXY.DISKAK = Common.cmbdiskToDiskak(this.cmbDISKAK.SelectedIndex);
+
+                dataXY.DISKX = this.tbDISKX.Text;
+                dataXY.DISKY = this.tbDISKY.Text;
+                dataXY.DISKZ = this.tbDISKZ.Text;
+                dataXY.FLAP_0 = this.tbFLAP_0.Text;
+                dataXY.FLAP_C1 = this.tbFLAP_C1.Text;
+                dataXY.FLAP_S1 = this.tbFLAP_S1.Text;
+                dataXY.HDISK = this.tbHDISK.Text;
+                dataXY.INVERSE = this.cmbINVERSE.SelectedIndex;
+                dataXY.MU = this.tbMU.Text;
+                dataXY.N_BLADE = this.tbN_BLADE.Text;
+                dataXY.OMIGA = this.tbOMIGA.Text;
+                dataXY.PITCH_0 = this.tbPITCH_0.Text;
+                dataXY.PITCH_C = this.tbPITCH_C.Text;
+                dataXY.PITCH_S = this.tbPITCH_S.Text;
+                dataXY.RADIUS = this.tbRADIUS.Text;
+                dataXY.RADIUSC = this.tbRADIUSC.Text;
+                dataXY.TWSIT = this.tbTWSIT.Text;
+                dataXY.BLADE = string.Empty;
+                for (int i = 0; i < this.dgvYX.Rows.Count; i++)
+                {
+                    for (int j = 0; j < this.dgvYX.Columns.Count; j++)
+                    {
+                        if (j == 0)
+                        {
+                            dataXY.BLADE = dataXY.BLADE + this.dgvYX.Rows[i].Cells[j].Value.ToString();
+                        }
+                        else
+                        {
+                            dataXY.BLADE = dataXY.BLADE + "#" + this.dgvYX.Rows[i].Cells[j].Value.ToString();
+                        }
+                    }
+                    if (i < this.dgvYX.Rows.Count - 1)
+                    {
+                        dataXY.BLADE = dataXY.BLADE + "|";
+                    }
+                }
+
+                return dataXY;
+            //    selNode.Tag = dataXY;
+            //    this.XYlistView.SelectedItems[0].Tag = dataXY;
+            //}
+        }
+
         private void btnDelXY_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("是否删除\"" + this.treeViewXY.SelectedNode.Text + "\"?",
-                "通告", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (this.XYlistView.SelectedItems.Count != 0 && MessageBox.Show("是否删除\"" + this.XYlistView.SelectedItems[0].Text + "\"?",
+    "通告", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                this.treeViewXY.SelectedNode.Remove();
+                this.XYlistView.Items.Remove(this.XYlistView.SelectedItems[0]);
+                bool flag = true;
+                if (this.XYlistView.Items.Count == 0)
+                {
+                    flag = false;
+                }
+                this.btnEditXY.Enabled = flag;
+                this.btnDelXY.Enabled = flag;
+                this.gbYSJ.Enabled = flag;
+                this.groupBox1.Enabled = flag;
             }
+
+            //if (MessageBox.Show("是否删除\"" + this.treeViewXY.SelectedNode.Text + "\"?",
+            //    "通告", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            //{
+                
+            //}
         }
 
         private void treeViewXY_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             //Point clickPoint = new Point(e.X, e.Y);
             //TreeNode selNode = e.Node;// this.treeViewXY.GetNodeAt(clickPoint);
-            loadYXGridFormNodeTag(e.Node);
+            loadYXGridFormNodeTag((sXY)e.Node.Tag);
         }
 
 
@@ -650,14 +788,14 @@ namespace AFA
         /// 从指定的旋翼结点加载数据到翼型Grid中.
         /// </summary>
         /// <param name="selNode"></param>
-        private void loadYXGridFormNodeTag(TreeNode selNode)
+        private void loadYXGridFormNodeTag(sXY dataXY)
         {
-            if (selNode != null)
+            if (!dataXY.Equals(null))
             {
                 this.btnEditXY.Enabled = true;
                 this.btnDelXY.Enabled = true;
 
-                sXY dataXY = (sXY)selNode.Tag;
+                //sXY dataXY = (sXY)selNode.Tag;
                 this.tbALF_TPP.Text = dataXY.ALF_TPP;
                 this.tbCHORD.Text = dataXY.CHORD;
 
@@ -719,17 +857,21 @@ namespace AFA
                 string GKPath = Common.prjName + Path.DirectorySeparatorChar + this.tbName.Text + Path.DirectorySeparatorChar;
                 this.chkBLCONT.Enabled = File.Exists(GKPath + "FRESULT.DAT");
             }
+
+            chkModelXY_CheckedChanged(null, null);
         }
 
         private void chkModelXY_CheckedChanged(object sender, EventArgs e)
         {
             if (this.chkModelXY.Checked)
             {
-                this.gbYSJ.Enabled = true;
+                //this.groupBox2.Enabled = true;
+                this.Height = 656;
             }
             else
             {
-                this.gbYSJ.Enabled = false;
+                //this.groupBox2.Enabled = false;
+                this.Height = 283;
             }
         }
 
@@ -750,6 +892,30 @@ namespace AFA
                 this.inletBox.Enabled = false;
             }
         }
+
+        private void XYlistView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            //btnEditXY_Click(null, null);
+            
+            if (e.IsSelected)
+            {
+                loadYXGridFormNodeTag((sXY)e.Item.Tag);
+            }
+            else
+            {
+                e.Item.Tag = saveXYControlToObject();
+            }
+            
+            
+        }
+
+        private void XYlistView_DrawItem(object sender, DrawListViewItemEventArgs e)
+        {
+            
+            e.DrawDefault = true; //我这里用默认颜色即可，只需要在TreeView失去焦点时选中节点仍然突显
+            return;
+        }
+
 
 
     }

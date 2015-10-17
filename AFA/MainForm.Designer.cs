@@ -49,14 +49,15 @@
             this.tsWG = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsQJ = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsQJ = new System.Windows.Forms.ToolStripMenuItem();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.showGKBtn = new System.Windows.Forms.CheckBox();
             this.meshDisControl1 = new MeshDisLib.MeshDisControl();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.menuStrip1.SuspendLayout();
             this.cmsAddGK.SuspendLayout();
             this.cmsEditGK.SuspendLayout();
@@ -260,6 +261,8 @@
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(138, 425);
             this.treeView1.TabIndex = 0;
+            this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
+            this.treeView1.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseDoubleClick);
             this.treeView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView1_MouseDown);
             // 
             // groupBox2
@@ -286,6 +289,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.showGKBtn);
             this.tabPage1.Controls.Add(this.meshDisControl1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
@@ -294,6 +298,27 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "网格显示";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // showGKBtn
+            // 
+            this.showGKBtn.AutoSize = true;
+            this.showGKBtn.BackColor = System.Drawing.Color.Transparent;
+            this.showGKBtn.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.showGKBtn.Checked = true;
+            this.showGKBtn.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showGKBtn.Enabled = false;
+            this.showGKBtn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.showGKBtn.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+            this.showGKBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.showGKBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.showGKBtn.ForeColor = System.Drawing.Color.Black;
+            this.showGKBtn.Location = new System.Drawing.Point(6, 6);
+            this.showGKBtn.Name = "showGKBtn";
+            this.showGKBtn.Size = new System.Drawing.Size(120, 16);
+            this.showGKBtn.TabIndex = 1;
+            this.showGKBtn.Text = "是否显示远场边界";
+            this.showGKBtn.UseVisualStyleBackColor = false;
+            this.showGKBtn.CheckedChanged += new System.EventHandler(this.showGKBtn_CheckedChanged);
             // 
             // meshDisControl1
             // 
@@ -329,6 +354,7 @@
             this.groupBox2.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -363,6 +389,7 @@
         private MeshDisLib.MeshDisControl meshDisControl1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.ToolStripMenuItem configure;
+        private System.Windows.Forms.CheckBox showGKBtn;
     }
 }
 
