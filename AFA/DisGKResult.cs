@@ -53,11 +53,25 @@ namespace AFA
 
 
             //更改标题的字体
-            FontSpec myFont = new FontSpec("Arial", 20, Color.Red, false, false, false);
-            this.myPane.Title.FontSpec = myFont;
-            this.myPane.XAxis.Title.FontSpec = myFont;
-            this.myPane.YAxis.Title.FontSpec = myFont;
+            //FontSpec myFont = new FontSpec("宋体", 20, Color.Red, false, false, false);
+            
+            //this.myPane.Title.FontSpec = myFont;
+            //this.myPane.XAxis.Title.FontSpec = myFont;
+            //this.myPane.YAxis.Title.FontSpec = myFont;
 
+            //设置网格线可见
+            myPane.XAxis.MajorGrid.IsVisible = true;
+            myPane.YAxis.MajorGrid.IsVisible = true;
+
+            //设置网格线颜色
+            myPane.XAxis.MajorGrid.Color = Color.Chocolate;
+            myPane.YAxis.MajorGrid.Color = Color.Chocolate;
+
+            //设置网格线形式
+            myPane.XAxis.MajorGrid.DashOff = 1;
+            myPane.YAxis.MajorGrid.DashOff = 1;
+            myPane.XAxis.MajorGrid.DashOn = 4;
+            myPane.YAxis.MajorGrid.DashOn = 4;
 
             //初始化图形
             if (pointYCollection == null||pointYCollection.Count==0)
@@ -110,17 +124,6 @@ namespace AFA
             {
                 return;
             }
-            //string tempFilePath=this.currenGKPath + "listen_roto.temp";
-            
-            //if (File.Exists(tempFilePath))
-            //{
-            //    File.Delete(tempFilePath);
-            //}
-            //else
-            //{
-            //    FileStream fs=new FileStream(tempFilePath, FileMode.CreateNew);
-            //    fs.Close();
-            //}
 
             TreeNode node=MainForm.GKNode.Nodes[this.page.Text];
             sGK gk=(sGK)MainForm.GKNode.Nodes[this.page.Text].Tag;
@@ -135,7 +138,8 @@ namespace AFA
                 File.Move(this.currenGKPath + "listen_roto.temp", this.currenGKPath + "listen_roto.dat");//更改文件名,用于续算完成后合并成一个文件.
             }
 
-            this.process = Common.RunFile(rotoPath + "rotorCFD32.exe", rotoPath, RotoProcess_OutputHandler);
+            this.calcStateLabel.Text = "计算中.";
+            this.process = Common.RunFile(rotoPath + "rotorCFD.exe", rotoPath, RotoProcess_OutputHandler, exitProcess);
             if (this.process == null)
             {
                 MessageBox.Show("求解器运行失败!");
@@ -144,6 +148,17 @@ namespace AFA
             {
                 MainForm.rotor_Process.Add(this.page.Text,this.process);
             }
+        }
+
+        /// <summary>
+        /// 进程退出返回事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void exitProcess(object sender, EventArgs e)
+        {
+            this.calcStateLabel.Text = "计算已完成.";
+            //MessageBox.Show("计算已完成.");
         }
 
         /// <summary>
@@ -260,7 +275,9 @@ namespace AFA
                 MessageBox.Show("网格文件没有生成");
                 return;
             }
-            workDir = workDir.Remove(workDir.LastIndexOf("\\bin"));
+            workDir = new FileInfo(workDir).DirectoryName;
+            workDir = new FileInfo(workDir).DirectoryName;
+            //workDir = workDir.Remove(workDir.LastIndexOf("\\bin"));
 
 
             try
@@ -319,6 +336,7 @@ namespace AFA
 
         private void cmbDisType_SelectedValueChanged(object sender, EventArgs e)
         {
+            
             this.cmbType = this.cmbDisType.SelectedIndex;
             switch (cmbType)
             {

@@ -102,7 +102,7 @@
             // 
             this.tsNew.Image = global::AFA.Properties.Resources.folder_new;
             this.tsNew.Name = "tsNew";
-            this.tsNew.Size = new System.Drawing.Size(112, 22);
+            this.tsNew.Size = new System.Drawing.Size(152, 22);
             this.tsNew.Text = "新建";
             this.tsNew.Click += new System.EventHandler(this.tsNew_Click);
             // 
@@ -110,7 +110,7 @@
             // 
             this.tsOpen.Image = global::AFA.Properties.Resources.open_file;
             this.tsOpen.Name = "tsOpen";
-            this.tsOpen.Size = new System.Drawing.Size(112, 22);
+            this.tsOpen.Size = new System.Drawing.Size(152, 22);
             this.tsOpen.Text = "打开";
             this.tsOpen.Click += new System.EventHandler(this.tsOpen_Click);
             // 
@@ -118,7 +118,7 @@
             // 
             this.tsSave.Image = global::AFA.Properties.Resources.save;
             this.tsSave.Name = "tsSave";
-            this.tsSave.Size = new System.Drawing.Size(112, 22);
+            this.tsSave.Size = new System.Drawing.Size(152, 22);
             this.tsSave.Text = "保存";
             this.tsSave.Click += new System.EventHandler(this.tsSave_Click);
             // 
@@ -126,7 +126,7 @@
             // 
             this.tsSaveAs.Enabled = false;
             this.tsSaveAs.Name = "tsSaveAs";
-            this.tsSaveAs.Size = new System.Drawing.Size(112, 22);
+            this.tsSaveAs.Size = new System.Drawing.Size(152, 22);
             this.tsSaveAs.Text = "另存为";
             this.tsSaveAs.Visible = false;
             this.tsSaveAs.Click += new System.EventHandler(this.tsSaveAs_Click);
@@ -135,7 +135,7 @@
             // 
             this.tsExit.Image = global::AFA.Properties.Resources.logout;
             this.tsExit.Name = "tsExit";
-            this.tsExit.Size = new System.Drawing.Size(112, 22);
+            this.tsExit.Size = new System.Drawing.Size(152, 22);
             this.tsExit.Text = "退出";
             this.tsExit.Click += new System.EventHandler(this.tsExit_Click);
             // 
@@ -339,6 +339,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "全机气动分析";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);

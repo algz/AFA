@@ -13,6 +13,7 @@ using System.Threading;
 using AFA.LoadMask;
 using System.Configuration;
 using ZedGraph;
+using MeshDisLib;
 
 namespace AFA
 {
@@ -246,8 +247,9 @@ namespace AFA
         private void tsWG_Click(object sender, EventArgs e)
         {
             AFATreeNode selNode = (AFATreeNode)this.treeView1.SelectedNode;
-            if (selNode!= null)
+            if (selNode != null && MessageBox.Show("导入网格会清除已计算的结果数据", "提示", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
+
                 OpenFileDialog dlg = new OpenFileDialog();
                 dlg.Title = "导入网格";
                 // dlg.InitialDirectory = Common.dataFolder;
@@ -255,6 +257,14 @@ namespace AFA
 
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
+                    if (dlg.FileName == Common.prjName + "\\rotorwing_gambit.msh")
+                    {
+                        MessageBox.Show("源网格文件与目标网格文件相同,不能导入.");
+                        return;
+                    }
+                //                    Directory.GetCurrentDirectory
+                //File.Copy(Common.MESHLOCATION, Common.prjName + "\\rotorwing_gambit.msh", true);
+
                     selNode.Nodes.Clear();
                     string str = dlg.FileName;
                     string temp = str.Substring(str.LastIndexOf("\\") + 1);
@@ -267,6 +277,16 @@ namespace AFA
 
                     //if (MessageBox.Show("是否复制到本地", "网格复制", MessageBoxButtons.OKCancel) == DialogResult.OK)
                     //{
+                    this.tabPage1.Controls.Remove(this.meshDisControl1);
+                    this.showGKBtn.Enabled = false;
+                    this.meshDisControl1 = new MeshDisLib.MeshDisControl();
+                    this.meshDisControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+                    this.meshDisControl1.Location = new System.Drawing.Point(3, 3);
+                    this.meshDisControl1.Name = "meshDisControl1";
+                    this.meshDisControl1.Size = new System.Drawing.Size(663, 393);
+                    this.meshDisControl1.TabIndex = 0;
+                    this.tabPage1.Controls.Add(this.meshDisControl1);
+
                         Thread thread = new Thread(new ParameterizedThreadStart(copyMSH));
                         thread.IsBackground = true;
                         //thread.Start();// 无参的回调
@@ -303,185 +323,41 @@ namespace AFA
         private void callBack(string msg)
         {
             this.meshDisControl1.MeshDis(msg);
+
+            clearResultData();
+
             this.showGKBtn.Enabled = true;
             this.cmd.HideOpaqueLayer();
         }
 
-        ///// <summary>
-        ///// 创建或修改工况数据到项目目录下的CFDIN.DAT文件中,并复制求解器(rotorCFD)到项目目录中.
-        ///// </summary>
-        ///// <returns></returns>
-        //private bool SaveToCFDIN()
-        //{
-        //    if (Common.MESHLOCATION==string.Empty)
-        //    {
-        //        MessageBox.Show("请在\"计算网格\"节点上点击右键导入网格.");
-        //        return false;
-        //    }
-        //    int iGK = GKNode.Nodes.Count; //工况结点集
-        //    string strGKDir = string.Empty;
-        //    string strCFDIN = string.Empty;
-        //    sGK data ;
-        //    StreamWriter sw = null;
-        //    try
-        //    {
-        //        //创建或修改工况数据到项目目录下的CFDIN.DAT文件中.
-        //        for (int i = 0; i < iGK; i++)
-        //        {
-        //            strGKDir = Common.prjName + "\\" + GKNode.Nodes[i].Text+"\\";
-        //            strCFDIN = strGKDir + "CFDIN.DAT";
-        //            if (!Directory.Exists(strGKDir))
-        //            {
-        //                Directory.CreateDirectory(strGKDir);
-        //            }
-
-        //            data = (sGK)GKNode.Nodes[i].Tag;
-        //            sw = new StreamWriter(strCFDIN, false);//准备写入工况数据
-        //            string sp = "   ";
-        //            using (sw)
-        //            {
-        //                sw.WriteLine("INPUT_PARA");
-        //                sw.WriteLine(sp);
-        //                sw.WriteLine("MODEL");
-        //                sw.WriteLine(data.MODEL);
-        //                sw.WriteLine(sp);
-        //                sw.WriteLine("FUSELAGE");
-        //                sw.WriteLine("FUX FUY FUZ");
-        //                sw.WriteLine(data.FUX + sp + data.FUY + sp + data.FUZ);
-        //                sw.WriteLine("MACH_INF");
-        //                sw.WriteLine(data.MACH_INF);
-        //                sw.WriteLine(sp);
-        //                sw.WriteLine("FUSELAGE/ROTOR");
-        //                sw.WriteLine("NDISK MU");
-        //                sw.WriteLine(data.NDISK + sp + data.ZMU);
-        //                sw.WriteLine("DISKX DISKY DISKZ DISKAK RADIUS CUTR TWSIT CHORD INVERSE");
-        //                for (int j = 0; j < data.NDISK; j++)
-        //                {
-        //                    sw.WriteLine(data.XYData[j].DISKX + sp + data.XYData[j].DISKY + sp
-        //                        + data.XYData[j].DISKZ + sp + data.XYData[j].DISKAK + sp
-        //                        + data.XYData[j].RADIUS + sp + data.XYData[j].RADIUSC + sp
-        //                        + data.XYData[j].TWSIT + sp + data.XYData[j].CHORD + sp
-        //                        + data.XYData[j].INVERSE);
-        //                }
-        //                sw.WriteLine("FLAP_0 FLAP_C1 FLAP_S1 PITCH_0 PITCH_S PITCH_C");
-        //                for (int j = 0; j < data.NDISK; j++)
-        //                {
-        //                    sw.WriteLine(data.XYData[j].FLAP_0 + sp + data.XYData[j].FLAP_C1 + sp
-        //                        + data.XYData[j].FLAP_S1 + sp + data.XYData[j].PITCH_0 + sp
-        //                        + data.XYData[j].PITCH_S + sp + data.XYData[j].PITCH_C);
-        //                }
-        //                sw.WriteLine("ALF_TPP HDISK N_BLADE OMIGA");
-        //                for (int j = 0; j < data.NDISK; j++)
-        //                {
-        //                    sw.WriteLine(data.XYData[j].ALF_TPP + sp + data.XYData[j].HDISK + sp
-        //                        + data.XYData[j].N_BLADE + sp + data.XYData[j].OMIGA);
-        //                }
-        //                sw.WriteLine("BLADE");
-        //                for (int j = 0; j < data.NDISK; j++)
-        //                {
-        //                    sw.WriteLine(data.XYData[j].BLADE);
-
-        //                    string[] yx = data.XYData[j].BLADE.Split(new Char[] { '|' });
-        //                    for (int k = 0; k < yx.Length; k++)
-        //                    {
-        //                        string[] yxDGV = yx[k].Split(new Char[] { '#' });
-        //                        File.Copy(Common.yxFolder + yxDGV[2], strGKDir + yxDGV[2], true);
-        //                    }
-        //                }
-        //                sw.WriteLine(sp);
-        //                sw.WriteLine("AIRINTAKE");
-        //                sw.WriteLine("FLOWRATE");
-        //                sw.WriteLine(data.FLOWRATE);
-        //                sw.WriteLine(sp);
-        //                sw.WriteLine("COMPUTE_PARA");
-        //                sw.WriteLine("PITCH_V YAW_V RE");
-        //                sw.WriteLine(data.PITCH_V + sp + data.YAW_V+sp+data.RE);
-        //                sw.WriteLine("ITMAX SAVE_STEP CFL");
-        //                sw.WriteLine(Common.ITMAX+sp+Common.SAVE_STEP+sp+Common.CFL);
-        //                sw.WriteLine("MESHLOCATION");
-        //                sw.WriteLine(Common.prjName + "\\FUSELAGE.dat");
-        //                sw.WriteLine("BLCONT DATA");
-        //                sw.WriteLine(data.BLCONT+sp+"等测试时补入");
-        //                sw.Flush();
-        //                sw.Close();
-
-                        
-        //            }
-
-        //            //拷贝rotorCFD.exe到项目目录下
-        //            File.Copy(Common.appFolder + "rotorCFD.exe", strGKDir + "rotorCFD.exe", true);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show(ex.Message);
-        //        sw.Close();
-        //        sw.Dispose();
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        /*
-        private void RunFile(string appName, string workDir,bool bWaite)
+        private void clearResultData()
         {
-            Process proc = new Process();
-            proc.StartInfo.FileName = appName;
-            proc.StartInfo.Arguments = "";
-            proc.StartInfo.WorkingDirectory = workDir;
+            File.Delete(Common.prjName + @"\DISK.DAT");
+            File.Delete(Common.prjName + @"\GRID.DAT");
+            File.Delete(Common.prjName + @"\SURFACE.DAT");
 
-            proc.StartInfo.UseShellExecute = false;
-            //重定向标准输入     
-            proc.StartInfo.RedirectStandardInput = true;
-            //重定向标准输出
-            proc.StartInfo.RedirectStandardOutput = true;
-            //重定向错误输出  
-            proc.StartInfo.RedirectStandardError = true;
-            //设置不显示窗口
-            //proc.StartInfo.CreateNoWindow = true;
-            
-            try
+
+
+            for (int i = 0; i < this.treeView1.Nodes[0].Nodes[0].Nodes.Count; i++)
             {
-                proc.Start();
-                
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
-            
-            if (bWaite)
-            {
-                StreamWriter myStreamWriter = proc.StandardInput;
-                while (!proc.HasExited)
+                sGK gk = (sGK)this.treeView1.Nodes[0].Nodes[0].Nodes[i].Tag;
+                if(Directory.Exists(Common.prjName + "\\" + gk.Name))
                 {
-                    String s = proc.StandardOutput.ReadLine();
-                    Console.Out.WriteLine(s);
-                    //switch (s)
-                    //{
-                    //    case " 是否需要重新生成网格(Y/N)？":
-                    //        myStreamWriter.WriteLine("y");
-                    //        Console.Out.WriteLine("y");
-                    //        break;
-                    //    case " 机身网格类型：(1.结构网格2.非结构网格)":
-                    //        myStreamWriter.WriteLine("2");
-                    //        Console.Out.WriteLine("2");
-                    //        break;
-                    //}
+                    Directory.Delete(Common.prjName + "\\" + gk.Name, true);
                 }
-                proc.WaitForExit();
-                //myStreamWriter.Close();
-                proc.Close();
-                //String strRst = proc.StandardOutput.ReadToEnd();
-                //if (proc.HasExited)
-                //{
-                //    // MessageBox.Show("结束");
-                //} 
-            }
-          
-        }
-        */
 
+                foreach(TabPage page in this.tabControl1.TabPages)
+                {
+                    if (page.Text == gk.Name)
+                    {
+                        this.tabControl1.TabPages.Remove(page);
+                        break;
+                    }
+                    
+                }
+            }
+            
+        }
         
         private void tsCalculate_Click(object sender, EventArgs e)
         {
@@ -524,9 +400,13 @@ namespace AFA
                 disGKResult1.Dock = DockStyle.Fill;
                 disGKResult1.Name = "disGKResult" + i;
 
+                if (i == configForm.selGKNode.Count - 1)
+                {
+                    this.tabControl1.SelectedTab = m_tabPage;
+                }
+                
             }
             #endregion
-
         }
 
         private void RotoProcess_OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
@@ -546,7 +426,6 @@ namespace AFA
                 }
             }
         }
-
 
         public void SaveFile(string strFile)
         {
@@ -846,7 +725,7 @@ namespace AFA
                     node = new AFATreeNode(data.Name, TreeNodeType.nodeGKCase);
                     node.Name = data.Name;
                     node.Tag = data;
-                    GKNode.Nodes.Add(node);
+                    MainForm.GKNode.Nodes.Add(node);
                 }
             }
             Common.ITMAX = GetNodeText(root, "求解器设置", "ITMAX", string.Empty, string.Empty);
@@ -858,6 +737,30 @@ namespace AFA
         public delegate void CallBackDelegate(string msg);
         private OpaqueCommand cmd = new OpaqueCommand();
 
+        public delegate void MethodParamInvoker(string val);
+        private void openFileCallBack(object obj,LoadingForm form)
+        {
+            try
+            {
+                object[] objs=(object[])obj;
+                
+                string fileName = objs[1].ToString();
+                //MethodInvoker mi = new MethodInvoker(form.setLoadingText);
+                //this.BeginInvoke(mi);
+                MethodParamInvoker mpi = new MethodParamInvoker(form.setLoadingText);
+                this.BeginInvoke(mpi, "加载.Mesh文件.");
+
+                MeshDisControl meshDisControl = (MeshDisControl)objs[0];
+                //form.loadingText = "加载.Mesh文件.";
+                meshDisControl.MeshDis(fileName.ToString());
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("openFileCallBack:"+e.Message);
+            }
+        }
+
+
         private void tsOpen_Click(object sender, EventArgs e)
         {
             OpenFileDialog oDlg = new OpenFileDialog();
@@ -866,21 +769,23 @@ namespace AFA
             oDlg.Filter = "prj files(*.prj)|*.prj";
             if (oDlg.ShowDialog() == DialogResult.OK)
             {
-                Common.prjName = oDlg.FileName.Replace("\\"+oDlg.SafeFileName,"");
+                this.m_strPrjFile = oDlg.FileName;
+                Common.prjName = oDlg.FileName.Replace("\\" + oDlg.SafeFileName, "");
 
                 InitTree();
                 string str = oDlg.FileName;
                 str = str.Substring(str.LastIndexOf("\\") + 1);
-                this.Text ="全机气动布局---"+ str;
-                m_strPrjFile = oDlg.FileName;
+                this.Text = "全机气动布局---" + str;
+
                 this.tsSave.Enabled = true;
                 this.tsSaveAs.Enabled = true;
 
-                OpenFile(oDlg.FileName);
+                string fileName = oDlg.FileName;
+                OpenFile(fileName);
                 GKNode.Expand();
 
                 WGNode.Nodes.Clear();
-                string strMsh = oDlg.FileName.Substring(0, oDlg.FileName.LastIndexOf("\\") + 1) + "rotorwing_gambit.msh";
+                string strMsh = fileName.Substring(0, fileName.LastIndexOf("\\") + 1) + "rotorwing_gambit.msh";
                 if (File.Exists(strMsh))
                 {
                     AFATreeNode node = null;
@@ -889,18 +794,26 @@ namespace AFA
                     WGNode.Expand();
                     Common.MESHLOCATION = strMsh;
 
-                    this.meshDisControl1.MeshDis(Common.MESHLOCATION);
+                    //this.meshDisControl1.MeshDis(strMsh);
+
+                    object[] objs = new object[2];
+                    objs[0] = this.meshDisControl1;
+                    objs[1] = strMsh;
+                    LoadingForm f = new LoadingForm(objs, this.openFileCallBack);
+                    f.ShowDialog(this);
+
                     this.showGKBtn.Enabled = true;
                     this.showGKBtn.Checked = true;
-                }        
+                }
 
                 //打开计算结果页面
-                for(int i=0;i<GKNode.Nodes.Count;i++)
+                for (int i = 0; i < GKNode.Nodes.Count; i++)
                 {
-                    
+
                     TreeNode node = GKNode.Nodes[i];
-                    string GKPath=Common.prjName+Path.DirectorySeparatorChar+node.Text+Path.DirectorySeparatorChar;
-                    if(!Directory.Exists(GKPath)){
+                    string GKPath = Common.prjName + Path.DirectorySeparatorChar + node.Text + Path.DirectorySeparatorChar;
+                    if (!Directory.Exists(GKPath))
+                    {
                         continue;
                     }
                     sGK data = (sGK)node.Tag;
@@ -918,14 +831,16 @@ namespace AFA
                     m_tabPage.Text = node.Text;//MainForm.GKNode.Nodes[i].Text;
                     m_tabPage.UseVisualStyleBackColor = true;
                     this.tabControl1.Controls.Add(m_tabPage);
+                    this.tabControl1.SelectedTab = m_tabPage; //this.tabControl1.TabPages[this.tabControl1.TabPages.Count-1];
+
                     //mainForm.Controls.Find("tabControl1", true)[0].Controls.Add(m_tabPage);
 
                     Dictionary<int, PointPairList> pointYCollection = new Dictionary<int, PointPairList>();
 
-                    //读取isten_roto.temp数据并加载画图.
+                    //读取listen_roto.dat数据并加载画图.
                     string s = "";
-                    string[] arr=null;
-                    using(FileStream fs = File.Open(GKPath + "listen_roto.temp", FileMode.OpenOrCreate, FileAccess.Read))
+                    string[] arr = null;
+                    using (FileStream fs = File.Open(GKPath + "listen_roto.dat", FileMode.OpenOrCreate, FileAccess.Read))
                     {
                         using (StreamReader sr = new StreamReader(fs))
                         {
@@ -956,15 +871,14 @@ namespace AFA
                             }
                         }
                     }
-                    
-                    DisGKResult disGKResult1 = new DisGKResult(m_tabPage,pointYCollection, false);
+
+                    DisGKResult disGKResult1 = new DisGKResult(m_tabPage, pointYCollection, false);
                     disGKResult1.drawGraph(arr);
 
                     m_tabPage.Controls.Add(disGKResult1);
                     disGKResult1.Dock = DockStyle.Fill;
                     disGKResult1.Name = "disGKResult" + i;
                 }
-
             }
         }
 
@@ -1054,6 +968,10 @@ namespace AFA
             {
                 tsEditGK_Click(sender, null);
             }
+            else if (e.Node.Text == "求解设置")
+            {
+                tsQJ_Click(null,null);
+            }
             
         }
 
@@ -1076,7 +994,7 @@ namespace AFA
             if (selNode != null&&selNode.Tag!=null)
             {
                 sGK gk = (sGK)selNode.Tag;
-                if (gk.MODEL == "1" && gk.MODEL == "101")
+                if (gk.MODEL == "1" || gk.MODEL == "101")
                 {
                     this.meshDisControl1.addRotor(null);
                 }

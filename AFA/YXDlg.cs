@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -17,6 +18,15 @@ namespace AFA
         public YXDlg()
         {
             InitializeComponent();
+        }
+
+        public YXDlg(string m_startR,string m_endR,string m_YXpath)
+        {
+            InitializeComponent();
+
+            this.tbStartR.Text = m_startR;
+            this.tbEndR.Text = m_endR;
+            this.tbYXPath.Text = m_YXpath;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -39,8 +49,9 @@ namespace AFA
 
             m_startR = this.tbStartR.Text;
             m_endR = this.tbEndR.Text;
-            m_YXpath = this.tbYXPath.Text;
-            m_YXpath = m_YXpath.Substring(m_YXpath.LastIndexOf("\\") + 1);
+            //m_YXpath = this.tbYXPath.Text;
+
+            m_YXpath = Path.GetFileName(this.tbYXPath.Text);// m_YXpath.Substring(m_YXpath.LastIndexOf("\\") + 1);
             this.DialogResult = DialogResult.OK;
         }
 

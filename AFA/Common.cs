@@ -292,8 +292,9 @@ namespace AFA
         /// </summary>
         /// <param name="appName">程序名</param>
         /// <param name="workDir">工作目录</param>
-        /// <param name="bWaite">是否阻塞运行</param>
-        public static Process RunFile(string appName, string workDir, OutputHandler handler)
+        /// <param name="handler">回调事件</param>
+        /// <param name="exitProcessHandler">退出关闭事件</param>
+        public static Process RunFile(string appName, string workDir, OutputHandler handler, EventHandler exitProcessHandler)
         {
             Process proc = new Process();
             proc.StartInfo.FileName = appName;
@@ -312,6 +313,13 @@ namespace AFA
             //设置不显示窗口
             proc.StartInfo.CreateNoWindow = true;
 
+            //增加退出事件
+            if (exitProcessHandler != null)
+            {
+                proc.EnableRaisingEvents = true;    //一定要有这个才能触发Exited 事件
+                proc.Exited += new EventHandler(exitProcessHandler);
+            }
+
             try
             {
                 proc.Start();
@@ -325,6 +333,8 @@ namespace AFA
 
             return proc;
         }
+
+
 
         public static Process RunFile(string appName, string workDir)
         {
@@ -473,14 +483,18 @@ namespace AFA
                             sw.WriteLine("BLADE");
                             for (int j = 0; j < data.NDISK; j++)
                             {
-                                sw.WriteLine("#" + data.XYData[j].BLADE + "#");
+                                sw.WriteLine("#" + data.XYData[j].BLADE.Replace('|', '#') + "#");
 
-                                string[] yx = data.XYData[j].BLADE.Split(new Char[] { '|' });
-                                for (int k = 0; k < yx.Length; k++)
+                                if (data.XYData[j].BLADE != "")
                                 {
-                                    string[] yxDGV = yx[k].Split(new Char[] { '#' });
-                                    File.Copy(Common.yxFolder + yxDGV[2], strGKDir + yxDGV[2], true);
+                                    string[] yx = data.XYData[j].BLADE.Split(new Char[] { '|' });
+                                    for (int k = 0; k < yx.Length; k++)
+                                    {
+                                        string[] yxDGV = yx[k].Split(new Char[] { '#' });
+                                        File.Copy(Common.yxFolder + yxDGV[2], strGKDir + yxDGV[2], true);
+                                    }
                                 }
+
                             }
                         }
                         
@@ -515,7 +529,7 @@ namespace AFA
                     }
 
                     //拷贝rotorCFD.exe到项目目录下
-                    File.Copy(Common.appFolder + "rotorCFD32.exe", strGKDir + "rotorCFD32.exe", true);
+                    File.Copy(Common.appFolder + "rotorCFD.exe", strGKDir + "rotorCFD.exe", true);
                 }
             }
             catch (Exception ex)

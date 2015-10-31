@@ -14,6 +14,21 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <PublishUrl>发布\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,7 +38,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -69,7 +84,7 @@
     <StartupObject>AFA.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>QJJD_32.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\QJQD.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -89,9 +104,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="SyswareComLibrary">
-      <HintPath>.\SyswareComLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="ZedGraph">
       <HintPath>.\ZedGraph.dll</HintPath>
     </Reference>
@@ -163,6 +175,12 @@
     <Compile Include="YXDlg.Designer.cs">
       <DependentUpon>YXDlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="LoadMask\LoadingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadMask\LoadingForm.Designer.cs">
+      <DependentUpon>LoadingForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="CalculateConfigForm.resx">
       <DependentUpon>CalculateConfigForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -205,6 +223,10 @@
     <EmbeddedResource Include="YXDlg.resx">
       <DependentUpon>YXDlg.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="LoadMask\LoadingForm.resx">
+      <DependentUpon>LoadingForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -228,12 +250,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MeshDisLib\MeshDisLib.vbproj">
-      <Project>{76508A8C-47F3-4D0B-812C-C1D209A5990D}</Project>
-      <Name>MeshDisLib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\loading.gif" />
   </ItemGroup>
   <ItemGroup>
@@ -241,6 +257,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="QJJD_32.ico" />
+    <None Include="Resources\QJQD.ico" />
     <None Include="Resources\help.png" />
     <None Include="Resources\documents.png" />
     <None Include="Resources\calculator %281%29.png" />
@@ -250,6 +267,24 @@
     <None Include="Resources\save.png" />
     <None Include="Resources\folder_new.png" />
     <None Include="Resources\open-file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MeshDisLib\MeshDisLib.vbproj">
+      <Project>{76508a8c-47f3-4d0b-812c-c1d209a5990d}</Project>
+      <Name>MeshDisLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -23,6 +23,7 @@ namespace AFA
         /// <returns></returns>
         public static string DataObjectToXml<T>(T result, string title, DataObjectToXmlDelegate<T> dataObjectMethod,string GKPath,long maxLine)
         {
+            //string path1=dataObjectMethod(result, true, GKPath, maxLine);
             if (PubSyswareCom.IsRuntimeServerStarted())
             {
                 if (result != null)
@@ -63,7 +64,7 @@ namespace AFA
             }
             else
             {
-                return "TDE/IDE 没有启动成功";
+                return PubSyswareCom.GetErrorMessage();// "TDE/IDE 没有启动成功";
             }
         }
 
@@ -84,16 +85,17 @@ namespace AFA
                 subSdo.name = result.Name;
                 //subSdo.children = new List<SyswareDataObject>();
 
-                
+                #region 加载工况部分数据
                 SyswareDataObject basicSdo = new SyswareDataObject();
                 basicSdo.name = "工况基本数据";
                 //basicSdo.value = Math.Round(result.datumWeightTotal, 6).ToString();
                 //basicSdo.unit = "Kilogram";
                 basicSdo.children = transFormWeightArithmeticToDataObject(result);
                 subSdo.children.Add(basicSdo);
+                #endregion
 
 
-
+                #region 加载"fresult.dat"结果数据
                 string[] arrs = { "迭代步数","密度残值", "机身升力", "机身阻力", "旋翼拉力", 
                                     "机身俯仰力矩", "机身偏航力矩", "机身滚转力矩", "旋翼俯仰力矩", "旋翼滚转力矩", 
                                     "旋翼反扭矩", "进气道压力畸变系数","进气道总压恢复系数" };
@@ -107,87 +109,153 @@ namespace AFA
                     }
                     using (StreamReader sr = new StreamReader(GKPath + "fresult.dat"))
                     {
-                        
-                        string data="" ;//= sr.ReadLine();
+
+                        SyswareDataObject rootSDO = new SyswareDataObject();
+                        rootSDO.name = "无量纲载荷数据";
+                        //assessSdo.value = data;// Math.Round(result.assessWeightTotal, 6).ToString();
+                        //assessSdo.unit = "Kilogram";
+                        //assessSdo.children = data;// transFormWeightArithmeticToDataObject(-1, result.assessWeightDataList);
+                        subSdo.children.Add(rootSDO);
+
+                        string data = "";// sr.ReadLine();
 
                         while (!sr.EndOfStream)
                         {
                             data = sr.ReadLine();
-                            string[] dataList = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                            if (maxLine.ToString() == dataList[0])
+                            string[] arr = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            
+                            //迭代步数
+                            SyswareDataObject oneSDO = new SyswareDataObject();
+                            oneSDO.id = System.Guid.NewGuid().ToString();
+                            oneSDO.name = arrs[0] + arr[0];
+                            //oneSDO.value = arr[0];
+                            //dataObject.unit = "Kilogram";//wd.weightUnit;
+                            //dataObject.remark = wd.strRemark;
+                            rootSDO.children.Add(oneSDO);
+
+                            for (int i = 1, j = 1; i < arrs.Length; i++, j++)
                             {
-                                break;
+                                SyswareDataObject dataObject = new SyswareDataObject();
+                                dataObject.id = System.Guid.NewGuid().ToString();
+                                dataObject.name = arrs[i];
+                                dataObject.value = arr[j];
+                                //dataObject.unit = "Kilogram";//wd.weightUnit;
+                                //dataObject.remark = wd.strRemark;
+                                oneSDO.children.Add(dataObject);
+                                if (i == 4 || i == 9)
+                                {
+                                    data = sr.ReadLine();
+                                    arr = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    j = -1;
+                                }
                             }
+
+
+                            #region 分部件输出
+
+                            SyswareDataObject temParent = new SyswareDataObject();
+                            temParent.id = System.Guid.NewGuid().ToString();
+                            temParent.name = "部件输出";
+                            //dataObject.unit = "Kilogram";//wd.weightUnit;
+                            //dataObject.remark = wd.strRemark;
+                            oneSDO.children.Add(temParent);
+
+
+                            while (!sr.EndOfStream)
+                            {
+                                //读入第一行
+                                string tems = sr.ReadLine();
+                                if (tems.Trim() == "#")
+                                {
+                                    break;
+                                }
+                                string[] temss = tems.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                
+                                SyswareDataObject dataObject = new SyswareDataObject();
+                                dataObject.id = System.Guid.NewGuid().ToString();
+                                dataObject.name = "分部件" + temss[0];
+                                //dataObject.value = temss[1];
+                                //dataObject.unit = "Kilogram";//wd.weightUnit;
+                                //dataObject.remark = wd.strRemark;
+                                temParent.children.Add(dataObject);
+
+                                SyswareDataObject parentSdo = new SyswareDataObject();
+                                parentSdo.id = System.Guid.NewGuid().ToString();
+                                parentSdo.name = "力";
+                                //dataObject.value = temss[1];
+                                //dataObject.unit = "Kilogram";//wd.weightUnit;
+                                //dataObject.remark = wd.strRemark;
+                                dataObject.children.Add(parentSdo);
+
+                                SyswareDataObject temp = new SyswareDataObject();
+                                temp.id = System.Guid.NewGuid().ToString();
+                                temp.name = "X";
+                                temp.value = temss[1];
+                                //dataObject.unit = "Kilogram";//wd.weightUnit;
+                                //dataObject.remark = wd.strRemark;
+                                parentSdo.children.Add(temp);
+
+                                temp = new SyswareDataObject();
+                                temp.id = System.Guid.NewGuid().ToString();
+                                temp.name = "Y";
+                                temp.value = temss[2];
+                                //dataObject.unit = "Kilogram";//wd.weightUnit;
+                                //dataObject.remark = wd.strRemark;
+                                parentSdo.children.Add(temp);
+
+                                temp = new SyswareDataObject();
+                                temp.id = System.Guid.NewGuid().ToString();
+                                temp.name = "Z";
+                                temp.value = temss[3];
+                                //dataObject.unit = "Kilogram";//wd.weightUnit;
+                                //dataObject.remark = wd.strRemark;
+                                parentSdo.children.Add(temp);
+
+                                parentSdo = new SyswareDataObject();
+                                parentSdo.id = System.Guid.NewGuid().ToString();
+                                parentSdo.name = "力矩";
+                                //dataObject.value = temss[1];
+                                //dataObject.unit = "Kilogram";//wd.weightUnit;
+                                //dataObject.remark = wd.strRemark;
+                                dataObject.children.Add(parentSdo);
+
+                                temp = new SyswareDataObject();
+                                temp.id = System.Guid.NewGuid().ToString();
+                                temp.name = "X";
+                                temp.value = temss[4];
+                                //dataObject.unit = "Kilogram";//wd.weightUnit;
+                                //dataObject.remark = wd.strRemark;
+                                parentSdo.children.Add(temp);
+
+                                //读入第二行
+                                tems = sr.ReadLine();
+                                temss = tems.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                
+                                temp = new SyswareDataObject();
+                                temp.id = System.Guid.NewGuid().ToString();
+                                temp.name = "Y";
+                                temp.value = temss[0];
+                                //dataObject.unit = "Kilogram";//wd.weightUnit;
+                                //dataObject.remark = wd.strRemark;
+                                parentSdo.children.Add(temp);
+
+                                
+
+                                temp = new SyswareDataObject();
+                                temp.id = System.Guid.NewGuid().ToString();
+                                temp.name = "Z";
+                                temp.value = temss[1];
+                                //dataObject.unit = "Kilogram";//wd.weightUnit;
+                                //dataObject.remark = wd.strRemark;
+                                parentSdo.children.Add(temp);
+
+                                
+                            }
+
+                            #endregion
+
                         }
                         
-                        SyswareDataObject assessSdo = new SyswareDataObject();
-                        assessSdo.name = "无量纲载荷数据";
-                        //assessSdo.value = data;// Math.Round(result.assessWeightTotal, 6).ToString();
-                        //assessSdo.unit = "Kilogram";
-                        //assessSdo.children = data;// transFormWeightArithmeticToDataObject(-1, result.assessWeightDataList);
-                        subSdo.children.Add(assessSdo);
-
-
-
-                        //data = sr.ReadLine();
-                        string[] arr = data.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                        for (int i = 0,j=0; i < arrs.Length; i++,j++)
-                        {
-                            SyswareDataObject dataObject = new SyswareDataObject();
-                            dataObject.id = System.Guid.NewGuid().ToString();
-                            dataObject.name = arrs[i];
-                            dataObject.value = arr[j];
-                            //dataObject.unit = "Kilogram";//wd.weightUnit;
-                            //dataObject.remark = wd.strRemark;
-                            assessSdo.children.Add(dataObject);
-                            if (i == 4 || i == 9)
-                            {
-                                data = sr.ReadLine();
-                                j = -1;
-                            }
-                        }
-
-                        SyswareDataObject temParent = new SyswareDataObject();
-                        temParent.id = System.Guid.NewGuid().ToString();
-                        temParent.name = "部件输出";
-                        //dataObject.unit = "Kilogram";//wd.weightUnit;
-                        //dataObject.remark = wd.strRemark;
-                        assessSdo.children.Add(temParent);
-
-                        while (!sr.EndOfStream)
-                        {
-                            string tems = sr.ReadLine();
-                            if (tems.Trim() == "#")
-                            {
-                                break;
-                            }
-                            string[] temss = tems.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-                            SyswareDataObject dataObject = new SyswareDataObject();
-                            dataObject.id = System.Guid.NewGuid().ToString();
-                            dataObject.name = "部件" + temss[0];
-                            //dataObject.value = temss[1];
-                            //dataObject.unit = "Kilogram";//wd.weightUnit;
-                            //dataObject.remark = wd.strRemark;
-                            temParent.children.Add(dataObject);
-
-                            SyswareDataObject temp = new SyswareDataObject();
-                            temp.id = System.Guid.NewGuid().ToString();
-                            temp.name = "升力";
-                            temp.value = temss[1];
-                            //dataObject.unit = "Kilogram";//wd.weightUnit;
-                            //dataObject.remark = wd.strRemark;
-                            dataObject.children.Add(temp);
-
-                            temp = new SyswareDataObject();
-                            temp.id = System.Guid.NewGuid().ToString();
-                            temp.name = "阻力";
-                            temp.value = temss[2];
-                            //dataObject.unit = "Kilogram";//wd.weightUnit;
-                            //dataObject.remark = wd.strRemark;
-                            dataObject.children.Add(temp);
-                        }
-
 
                     }
                     if (isAddChildren)
@@ -209,10 +277,10 @@ namespace AFA
                 {
                     return null;
                 }
+                #endregion
 
-                
 
-                
+
             }
             catch
             {

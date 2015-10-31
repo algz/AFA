@@ -15,7 +15,7 @@ namespace AFA
     public class PubSyswareCom
     {
         #region 变量
-        private static string m_ErrMsg = string.Empty;
+        private static string ErrMsg = string.Empty;
         private PubSyswareCom() { }
         #endregion
 
@@ -26,7 +26,7 @@ namespace AFA
         {
             try
             {
-                SyswareObj = Interaction.GetObject("", "Sysware.SyswareSDK.SyswareCom.SyswareComServer");
+                //SyswareObj = Interaction.GetObject("", "Sysware.SyswareSDK.SyswareCom.SyswareComServer");
 
 
                 //要获取的类型的 ProgID。 
@@ -47,10 +47,19 @@ namespace AFA
                     //object t = SyswareObj.GetType().InvokeMember("IsRuntimeServerStarted", BindingFlags.InvokeMethod, null, SyswareObj, new Object[] { });
 
                 }
+                else
+                {
+                    SyswareObj = Interaction.GetObject("", progID);
+                    if (SyswareObj == null)
+                    {
+                        throw new Exception("Sysware COM组件创建失败.");
+                    }
+                    
+                }
             }
-            catch
+            catch(Exception e)
             {
-                //XLog.Write("Sysware COM组件创建失败." + e.Message);
+                PubSyswareCom.ErrMsg = e.Message;
             }
         }
 
@@ -78,10 +87,10 @@ namespace AFA
         /// 每个错误信息只能获得一次，取走错误信息以后，错误信息字符串被置为空。
         /// </summary>
         /// <returns></returns>
-        public static string mGetErrorMessage()
+        public static string GetErrorMessage()
         {
-            string temp = m_ErrMsg;
-            m_ErrMsg = "";
+            string temp = ErrMsg;
+            ErrMsg = "";
             return temp;
         }
         #endregion
@@ -123,15 +132,24 @@ namespace AFA
                     // 设置参数的值（该种方法的限制是无法通过ref获取到errorMsg消息）
                     //Interaction.CallByName(SyswareObj, "IsRuntimeServerStarted", CallType.Method,
                     //        new Object[] { });
-                    return (bool)SyswareObj.GetType().InvokeMember("IsRuntimeServerStarted", BindingFlags.InvokeMethod, null, SyswareObj, null);
-                    //return true;
+                    if ((bool)SyswareObj.GetType().InvokeMember("IsRuntimeServerStarted", BindingFlags.InvokeMethod, null, SyswareObj, null))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        throw new Exception("TDE/IDE 没有启动成功");
+                    }
                 }
                 else
-                    return false;
+                {
+                    throw new Exception(PubSyswareCom.GetErrorMessage());
+                }
+                    
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
                 return false;
             }
         }
@@ -165,7 +183,7 @@ namespace AFA
                                     new object[] { name, value, input, output, gui });
                 }
             }
-            catch { m_ErrMsg = "建立整数参数失败。"; return false; }
+            catch { ErrMsg = "建立整数参数失败。"; return false; }
             return true;
         }
         #endregion
@@ -197,7 +215,7 @@ namespace AFA
                                     new object[] { name, value, input, output, gui });
                 }
             }
-            catch { m_ErrMsg = "建立实数参数失败。"; return false; }
+            catch { ErrMsg = "建立实数参数失败。"; return false; }
             return true;
         }
         #endregion
@@ -229,7 +247,7 @@ namespace AFA
                                     new object[] { name, value, input, output, gui });
                 }
             }
-            catch { m_ErrMsg = "建立字符串参数失败。"; return false; }
+            catch { ErrMsg = "建立字符串参数失败。"; return false; }
             return true;
         }
         #endregion
@@ -261,7 +279,7 @@ namespace AFA
                                     new object[] { name, value, input, output, gui });
                 }
             }
-            catch { m_ErrMsg = "建立字符串参数失败。"; return false; }
+            catch { ErrMsg = "建立字符串参数失败。"; return false; }
             return true;
         }
         #endregion
@@ -293,7 +311,7 @@ namespace AFA
                                     new object[] { name, value, input, output, gui });
                 }
             }
-            catch { m_ErrMsg = "建立整型数组参数失败。"; return false; }
+            catch { ErrMsg = "建立整型数组参数失败。"; return false; }
             return true;
         }
         #endregion
@@ -325,7 +343,7 @@ namespace AFA
                                     new object[] { name, value, input, output, gui });
                 }
             }
-            catch { m_ErrMsg = "建立实数型数组参数失败。"; return false; }
+            catch { ErrMsg = "建立实数型数组参数失败。"; return false; }
             return true;
         }
         #endregion
@@ -357,7 +375,7 @@ namespace AFA
                                     new object[] { name, value, input, output, gui });
                 }
             }
-            catch { m_ErrMsg = "建立字符串数组参数失败。"; return false; }
+            catch { ErrMsg = "建立字符串数组参数失败。"; return false; }
             return true;
         }
         #endregion
@@ -398,7 +416,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
                 return false;
             }
         }
@@ -439,7 +457,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
                 return false;
             }
         }
@@ -477,7 +495,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
                 return false;
             }
         }
@@ -516,7 +534,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
                 return string.Empty;
             }
         }
@@ -545,7 +563,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
                 return false;
             }
         }
@@ -587,7 +605,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
                 return false;
             }
         }
@@ -618,7 +636,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
                 return false;
             }
         }
@@ -644,7 +662,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
             }
             return null;
         }
@@ -669,7 +687,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
             }
         }
         #endregion
@@ -693,7 +711,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
             }
             return null;
         }
@@ -718,7 +736,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
             }
         }
         #endregion
@@ -777,7 +795,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
             }
         }
 
@@ -813,7 +831,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
             }
         }
         #endregion
@@ -846,7 +864,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
             }
         }
 
@@ -877,7 +895,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
             }
 
             return string.Empty;
@@ -911,7 +929,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
             }
         }
 
@@ -989,7 +1007,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
                 return false;
             }
         }
@@ -1012,7 +1030,7 @@ namespace AFA
             }
             catch (System.Exception ex)
             {
-                m_ErrMsg = ex.Message;
+                ErrMsg = ex.Message;
                 return false;
             }
         }

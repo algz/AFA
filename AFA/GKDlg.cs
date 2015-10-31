@@ -264,10 +264,24 @@ namespace AFA
                 MessageBox.Show("主旋翼前进比中请输入实数.");
                 return false;
             }
-            if (this.chkModelXY.Checked&&this.XYlistView.Items.Count==0)
+            if (this.chkModelXY.Checked && this.XYlistView.Items.Count == 0)
             {
                 MessageBox.Show("请添加旋翼.");
                 return false;
+            }
+            else
+            {
+                foreach (ListViewItem item in this.XYlistView.Items)
+                {
+                    sXY xy=(sXY)item.Tag;
+                    if (xy.BLADE == "")
+                    {
+                        MessageBox.Show("请添加'"+item.Text+"'的翼型数据.");
+                        return false;
+                    }
+                    
+                    
+                }
             }
             return true;
         }
@@ -505,6 +519,11 @@ namespace AFA
 
         private void btnAddYX_Click(object sender, EventArgs e)
         {
+            if (this.XYlistView.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("请选择翼型.");
+                return;
+            }
             YXDlg dlg = new YXDlg();
             if (dlg.ShowDialog()==DialogResult.OK)
             {
@@ -513,6 +532,10 @@ namespace AFA
                 this.dgvYX.Rows[iRow].Cells[0].Value = dlg.m_startR;
                 this.dgvYX.Rows[iRow].Cells[1].Value = dlg.m_endR;
                 this.dgvYX.Rows[iRow].Cells[2].Value = dlg.m_YXpath;
+
+                sXY xy=(sXY)this.XYlistView.SelectedItems[0].Tag;
+                xy.BLADE="#"+dlg.m_startR+"#"+dlg.m_endR+"#"+dlg.m_YXpath+"#";
+                this.XYlistView.SelectedItems[0].Tag = xy;
             }
         }
 
@@ -523,14 +546,15 @@ namespace AFA
                 return;
             }
 
-           
-
-            //TreeNode node = null;
-            //node = new TreeNode("旋翼"+this.treeViewXY.Nodes.Count.ToString());
-
             ListViewItem item = new ListViewItem();
             //item.BackColor = Color.LightSteelBlue;
-            item.Text = "旋翼" + this.XYlistView.Items.Count;
+            string name = "0";
+            if (this.XYlistView.Items.Count != 0)
+            {
+                name = this.XYlistView.Items[this.XYlistView.Items.Count - 1].Text;
+                name = (Convert.ToInt32(name.Substring(name.Length - 1)) + 1).ToString();
+            }
+            item.Text = "旋翼" + name;// this.XYlistView.Items.Count;
             
 
             sXY dataXY = new sXY();
@@ -579,6 +603,7 @@ namespace AFA
 
             item.Tag = dataXY;
             this.XYlistView.Items.Add(item);
+            item.Selected = true;
 
             this.btnEditXY.Enabled = true;
             this.btnDelXY.Enabled = true;
@@ -823,6 +848,7 @@ namespace AFA
                 this.dgvYX.Rows.Clear();
                 if (dataXY.BLADE != "")
                 {
+                    
                     string[] yx = dataXY.BLADE.Split(new Char[] { '|' });
 
                     for (int i = 0; i < yx.Length; i++)
@@ -866,12 +892,14 @@ namespace AFA
             if (this.chkModelXY.Checked)
             {
                 //this.groupBox2.Enabled = true;
-                this.Height = 656;
+                //this.Height = 656;
+                this.groupBox2.Enabled = true;
             }
             else
             {
                 //this.groupBox2.Enabled = false;
-                this.Height = 283;
+                //this.Height = 656 - this.groupBox2.Height;//283;
+                this.groupBox2.Enabled = false;
             }
         }
 
@@ -895,26 +923,96 @@ namespace AFA
 
         private void XYlistView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            //btnEditXY_Click(null, null);
-            
+            e.Item.ForeColor = Color.Black;
+            e.Item.BackColor = SystemColors.Window;
             if (e.IsSelected)
             {
+                e.Item.BackColor = SystemColors.Highlight;
+                e.Item.ForeColor = Color.White;
                 loadYXGridFormNodeTag((sXY)e.Item.Tag);
             }
             else
             {
                 e.Item.Tag = saveXYControlToObject();
+
             }
-            
+            if (this.XYlistView.SelectedItems.Count == 0)
+            {
+                this.gbYSJ.Enabled = groupBox1.Enabled = false;
+            }
+            else
+            {
+                gbYSJ.Enabled = groupBox1.Enabled= true;
+            }
             
         }
 
         private void XYlistView_DrawItem(object sender, DrawListViewItemEventArgs e)
         {
-            
+
             e.DrawDefault = true; //我这里用默认颜色即可，只需要在TreeView失去焦点时选中节点仍然突显
             return;
+
+            //if (e.State == ListViewItemStates.Selected && e.Item.Selected)
+            //{
+            //    //e.Item.BackColor = Color.Blue;
+            //    //e.Item.ForeColor = Color.White;
+            //    //演示为绿底白字
+            //    //e.Graphics.FillRectangle(Brushes.DarkBlue, e.Item.Bounds);
+
+            //    Font nodeFont = e.Item.Font;
+            //    //if (nodeFont == null) nodeFont = ((TreeView)sender).Font;
+            //    e.Graphics.DrawString(e.Item.Text, nodeFont, Brushes.White, Rectangle.Inflate(e.Bounds, 2, 0));
+            //}
+            //else
+            //{
+            //    e.DrawDefault = true;
+            //}
         }
+
+        private void dgvYX_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            DataGridViewRow row = this.dgvYX.Rows[e.RowIndex];
+            YXDlg dlg = new YXDlg(row.Cells[0].Value.ToString(), row.Cells[1].Value.ToString(), Common.prjName+@"\XY\"+row.Cells[2].Value.ToString());
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                row.Cells[0].Value = dlg.m_startR;
+                row.Cells[1].Value = dlg.m_endR;
+                row.Cells[2].Value = dlg.m_YXpath;
+
+                sXY xy = (sXY)this.XYlistView.SelectedItems[0].Tag;
+                xy.BLADE = "#" + dlg.m_startR + "#" + dlg.m_endR + "#" + dlg.m_YXpath + "#";
+                this.XYlistView.SelectedItems[0].Tag = xy;
+            }
+        }
+
+        private void XYlistView_Validated(object sender, EventArgs e)
+        {
+            //try
+            //{
+            //    if (XYlistView.FocusedItem != null)
+            //    {
+            //        XYlistView.FocusedItem.BackColor = SystemColors.Highlight;
+            //        XYlistView.FocusedItem.ForeColor = Color.White;
+            //        XYlistView.SelectedIndices.Add(XYlistView.FocusedItem.Index);
+            //    }
+            //}
+            //catch (Exception eEx)
+            //{
+            //    MessageBox.Show(eEx.Message);
+            //}
+        }
+
+
+
+        //private void XYlistView_Validated(object sender, EventArgs e)
+        //{
+        //    if (XYlistView.FocusedItem != null)
+        //    {
+        //        XYlistView.FocusedItem.BackColor = SystemColors.Highlight;
+        //        XYlistView.FocusedItem.ForeColor = Color.White;
+        //    }
+        //}
 
 
 

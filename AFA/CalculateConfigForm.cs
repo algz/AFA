@@ -44,16 +44,6 @@ namespace AFA
 
         private void confirmBtn_Click(object sender, EventArgs e)
         {
-            //foreach (TreeNode node in this.gkChkListBox.Items)
-            //{
-            //    this.selGKNode.Add(node);
-            //}
-            //this.selGKNode = this.gkChkListBox.SelectedItems;
-            //if (this.selGKNode.Count==0)
-            //{
-            //    MessageBox.Show("请选择运行求解器的工况");
-            //    return;
-            //}
             this.Close();
         }
 
@@ -66,7 +56,7 @@ namespace AFA
             {
                 //Process pro = MainForm.rotor_Process[key];
                 //string rotoPath = Common.prjName + Path.DirectorySeparatorChar + node.Text + Path.DirectorySeparatorChar;
-                if (node.Text == node.Text && !MainForm.rotor_Process[key].HasExited)
+                if (node.Text == key && !MainForm.rotor_Process[key].HasExited)
                 {
                     //MessageBox.Show("工况运行中不能修改.");
                     e.NewValue = CheckState.Checked;

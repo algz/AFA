@@ -36,7 +36,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.gbCG = new System.Windows.Forms.GroupBox();
-            this.XYlistView = new System.Windows.Forms.ListView();
             this.label25 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
@@ -54,6 +53,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.tbMACH_INF = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.XYlistView = new System.Windows.Forms.ListView();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.inletBox = new System.Windows.Forms.GroupBox();
@@ -257,18 +257,6 @@
             this.gbCG.TabStop = false;
             this.gbCG.Text = "常规数据";
             // 
-            // XYlistView
-            // 
-            this.XYlistView.BackColor = System.Drawing.SystemColors.Window;
-            this.XYlistView.HideSelection = false;
-            this.XYlistView.Location = new System.Drawing.Point(3, 39);
-            this.XYlistView.Name = "XYlistView";
-            this.XYlistView.Size = new System.Drawing.Size(379, 37);
-            this.XYlistView.TabIndex = 12;
-            this.XYlistView.UseCompatibleStateImageBehavior = false;
-            this.XYlistView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.XYlistView_DrawItem);
-            this.XYlistView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.XYlistView_ItemSelectionChanged);
-            // 
             // label25
             // 
             this.label25.AutoSize = true;
@@ -413,6 +401,19 @@
             this.label3.Size = new System.Drawing.Size(89, 12);
             this.label3.TabIndex = 0;
             this.label3.Text = "来流马赫数(Ma)";
+            // 
+            // XYlistView
+            // 
+            this.XYlistView.BackColor = System.Drawing.SystemColors.Window;
+            this.XYlistView.Location = new System.Drawing.Point(3, 39);
+            this.XYlistView.MultiSelect = false;
+            this.XYlistView.Name = "XYlistView";
+            this.XYlistView.Size = new System.Drawing.Size(379, 37);
+            this.XYlistView.TabIndex = 12;
+            this.XYlistView.UseCompatibleStateImageBehavior = false;
+            this.XYlistView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.XYlistView_DrawItem);
+            this.XYlistView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.XYlistView_ItemSelectionChanged);
+            this.XYlistView.Validated += new System.EventHandler(this.XYlistView_Validated);
             // 
             // btnOK
             // 
@@ -560,7 +561,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(774, 79);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
@@ -864,6 +865,7 @@
             this.dgvYX.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvYX.Size = new System.Drawing.Size(285, 157);
             this.dgvYX.TabIndex = 3;
+            this.dgvYX.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvYX_CellMouseDoubleClick);
             // 
             // Column1
             // 

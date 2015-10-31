@@ -80,7 +80,7 @@ namespace AFA
             //string strFuselage = Common.prjName + "GRID.dat";
             string grid = Common.prjName + "\\GRID.dat"; //网格文件
             string fu_plot = Common.prjName + "\\SURFACE.DAT"; //物面网格文件
-            File.Copy(Common.appFolder + "pre_mesh32.exe", Common.prjName + "\\pre_mesh32.exe", true);//更新预处理文件
+            File.Copy(Common.appFolder + "pre_mesh.exe", Common.prjName + "\\pre_mesh.exe", true);//更新预处理文件
             if (!File.Exists(grid)||!File.Exists(fu_plot))
             {//FUSELAGE.dat存在，说明已经转换过了。
                 if (string.Compare(Common.prjName + "\\rotorwing_gambit.msh", Common.MESHLOCATION, true) != 0)
@@ -88,13 +88,13 @@ namespace AFA
                     File.Copy(Common.MESHLOCATION, Common.prjName + "\\rotorwing_gambit.msh", true);
                 }
                 
-                this.proc=Common.RunFile(Common.prjName + "\\pre_mesh32.exe", Common.prjName, PreProcess_OutputHandler);
+                this.proc=Common.RunFile(Common.prjName + "\\pre_mesh.exe", Common.prjName, PreProcess_OutputHandler,null);
             }
             else
             {
                 if (MessageBox.Show(this,"是否重新转换网格文件", "转换网络", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    this.proc = Common.RunFile(Common.prjName + "\\pre_mesh32.exe", Common.prjName, PreProcess_OutputHandler);
+                    this.proc = Common.RunFile(Common.prjName + "\\pre_mesh.exe", Common.prjName, PreProcess_OutputHandler,null);
                 }
                 else
                 {

@@ -127,6 +127,7 @@ Public Class MeshDisControl
 
 
         Dim pointjudge(Points.Count - 1) As Boolean
+        'Dim x1, x2 As Double
         For i = 1 To Points.Count - 1
             If round(points(i).x, 3) = round(x_min, 3) Or round(points(i).x, 3) = round(x_max, 3) Then
                 pointjudge(i) = True
@@ -186,9 +187,8 @@ Public Class MeshDisControl
         vvv.Vertex.x = 0
         vvv.Vertex.y = 0
         vvv.Vertex.z = 0
-        vvv.fSize = 5
-        Dim mycolor1 As Color = System.Drawing.Color.Red
-        vvv.Color = ColorTranslator.ToWin32(mycolor1)
+        vvv.fSize = 50
+        vvv.color = ColorTranslator.ToWin32(mycolor)
 
 
         AxGraph3dCtrl1.CoordSystem.bShow = True '显示坐标轴
@@ -207,6 +207,22 @@ Public Class MeshDisControl
 
     'End Sub
     Public Sub addRotor(ByVal rotors(,) As Double)
+
+        If rotors Is Nothing Then
+            Try
+                AxGraph3dCtrl1.Document.Remove(1, MiniGraphicsLib.Geom3dType.GT_GROUP) '这个控件的knots是从0开始的,Faces是从1开始的
+                AxGraph3dCtrl1.Document.Remove(2, MiniGraphicsLib.Geom3dType.GT_GROUP) '这个控件的knots是从0开始的,Faces是从1开始的
+                AxGraph3dCtrl1.Document.Remove(3, MiniGraphicsLib.Geom3dType.GT_GROUP) '这个控件的knots是从0开始的,Faces是从1开始的
+                AxGraph3dCtrl1.Document.Remove(4, MiniGraphicsLib.Geom3dType.GT_GROUP) '这个控件的knots是从0开始的,Faces是从1开始的
+            Catch ex As Exception
+            End Try
+
+
+            AxGraph3dCtrl1.CoordSystem.bShow = True '显示坐标轴
+            'AxGraph3dCtrl1.SetViewFitAll()
+            AxGraph3dCtrl1.Document.UpdateAllViews()
+            Exit Sub
+        End If
 
 
         Dim CoordSystem = New MiniGraphicsLib.GlCoordSystem '定义坐标系

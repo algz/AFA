@@ -37,6 +37,8 @@
             this.extProcessBtn = new System.Windows.Forms.Button();
             this.stopCalculateBtn = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.calcStateLabel = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.iterateNum = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -152,6 +154,8 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.calcStateLabel);
+            this.panel2.Controls.Add(this.label10);
             this.panel2.Controls.Add(this.iterateNum);
             this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.label7);
@@ -176,6 +180,24 @@
             this.panel2.Size = new System.Drawing.Size(672, 114);
             this.panel2.TabIndex = 1;
             // 
+            // calcStateLabel
+            // 
+            this.calcStateLabel.AutoSize = true;
+            this.calcStateLabel.Location = new System.Drawing.Point(98, 79);
+            this.calcStateLabel.Name = "calcStateLabel";
+            this.calcStateLabel.Size = new System.Drawing.Size(41, 12);
+            this.calcStateLabel.TabIndex = 31;
+            this.calcStateLabel.Text = "待计算";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(15, 79);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(59, 12);
+            this.label10.TabIndex = 30;
+            this.label10.Text = "计算状态:";
+            // 
             // iterateNum
             // 
             this.iterateNum.AutoSize = true;
@@ -197,7 +219,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(506, 36);
+            this.label7.Location = new System.Drawing.Point(503, 36);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(11, 12);
             this.label7.TabIndex = 27;
@@ -217,7 +239,7 @@
             // xyllTxt
             // 
             this.xyllTxt.AutoSize = true;
-            this.xyllTxt.Location = new System.Drawing.Point(284, 79);
+            this.xyllTxt.Location = new System.Drawing.Point(282, 79);
             this.xyllTxt.Name = "xyllTxt";
             this.xyllTxt.Size = new System.Drawing.Size(11, 12);
             this.xyllTxt.TabIndex = 25;
@@ -226,7 +248,7 @@
             // jszlTxt
             // 
             this.jszlTxt.AutoSize = true;
-            this.jszlTxt.Location = new System.Drawing.Point(284, 54);
+            this.jszlTxt.Location = new System.Drawing.Point(282, 57);
             this.jszlTxt.Name = "jszlTxt";
             this.jszlTxt.Size = new System.Drawing.Size(11, 12);
             this.jszlTxt.TabIndex = 21;
@@ -246,9 +268,9 @@
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(384, 36);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(113, 12);
+            this.label13.Size = new System.Drawing.Size(119, 12);
             this.label13.TabIndex = 18;
-            this.label13.Text = "进气道总压恢复系数";
+            this.label13.Text = "进气道总压恢复系数:";
             this.label13.Visible = false;
             // 
             // label12
@@ -256,9 +278,9 @@
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(384, 11);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(113, 12);
+            this.label12.Size = new System.Drawing.Size(119, 12);
             this.label12.TabIndex = 17;
-            this.label12.Text = "进气道压力畸变系数";
+            this.label12.Text = "进气道压力畸变系数:";
             this.label12.Visible = false;
             // 
             // label8
@@ -266,9 +288,9 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(223, 79);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(53, 12);
+            this.label8.Size = new System.Drawing.Size(59, 12);
             this.label8.TabIndex = 13;
-            this.label8.Text = "旋翼拉力";
+            this.label8.Text = "旋翼拉力:";
             // 
             // mdcyTxt
             // 
@@ -282,29 +304,29 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(223, 55);
+            this.label5.Location = new System.Drawing.Point(223, 57);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(53, 12);
+            this.label5.Size = new System.Drawing.Size(59, 12);
             this.label5.TabIndex = 9;
-            this.label5.Text = "机身阻力";
+            this.label5.Text = "机身阻力:";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(223, 34);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(53, 12);
+            this.label4.Size = new System.Drawing.Size(59, 12);
             this.label4.TabIndex = 8;
-            this.label4.Text = "机身升力";
+            this.label4.Text = "机身升力:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(223, 11);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 12);
+            this.label2.Size = new System.Drawing.Size(59, 12);
             this.label2.TabIndex = 7;
-            this.label2.Text = "密度残值";
+            this.label2.Text = "密度残值:";
             // 
             // cmbDisType
             // 
@@ -317,16 +339,16 @@
             "旋翼拉力",
             "进气道压力畸变系数",
             "进气道总压恢复系数"});
-            this.cmbDisType.Location = new System.Drawing.Point(84, 52);
+            this.cmbDisType.Location = new System.Drawing.Point(100, 49);
             this.cmbDisType.Name = "cmbDisType";
-            this.cmbDisType.Size = new System.Drawing.Size(121, 20);
+            this.cmbDisType.Size = new System.Drawing.Size(117, 20);
             this.cmbDisType.TabIndex = 6;
             this.cmbDisType.SelectedValueChanged += new System.EventHandler(this.cmbDisType_SelectedValueChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(19, 55);
+            this.label3.Location = new System.Drawing.Point(15, 55);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(59, 12);
             this.label3.TabIndex = 3;
@@ -395,6 +417,8 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label iterateNum;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label calcStateLabel;
+        private System.Windows.Forms.Label label10;
 
     }
 }
