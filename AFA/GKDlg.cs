@@ -377,11 +377,8 @@ namespace AFA
             }
 
             #region 进气道
-            this.PRESS_OUT1.Text = _Data.inlet.PRESS_OUT1;
+            this.MASSOUT_RATE.Text = _Data.inlet.MASSOUT_RATE;
             this.TEMP_OUT0.Text = _Data.inlet.TEMP_OUT0;
-            this.PRESS_IN1.Text = _Data.inlet.PRESS_IN1;
-            this.PRESS_IN0.Text = _Data.inlet.PRESS_IN0;
-            this.TEMP_IN0.Text = _Data.inlet.TEMP_IN0;
 
             #endregion
 
@@ -451,11 +448,8 @@ namespace AFA
             }
 
             #region 进气道
-            _Data.inlet.PRESS_OUT1 = this.PRESS_OUT1.Text;
+            _Data.inlet.MASSOUT_RATE = this.MASSOUT_RATE.Text;
             _Data.inlet.TEMP_OUT0=this.TEMP_OUT0.Text;
-            _Data.inlet.PRESS_IN1 = this.PRESS_IN1.Text;
-            _Data.inlet.PRESS_IN0 = this.PRESS_IN0.Text;
-            _Data.inlet.TEMP_IN0 = this.TEMP_IN0.Text;
             #endregion
 
             #endregion

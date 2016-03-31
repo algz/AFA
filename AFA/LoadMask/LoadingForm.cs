@@ -83,6 +83,19 @@ namespace AFA.LoadMask
         {
                 this.loadDataText.Text = val;
         }
+
+        /// <summary>
+        /// 屏蔽关闭按钮功能,显示但无法关闭.
+        /// </summary>
+        /// <param name="m"></param>
+        protected override void WndProc(ref   Message m)
+        {
+            const int WM_SYSCOMMAND = 0x0112;
+            const int SC_CLOSE = 0xF060;
+            if (m.Msg == WM_SYSCOMMAND && (int)m.WParam == SC_CLOSE)
+            { return; }
+            base.WndProc(ref   m);
+        }
     }
 }
 

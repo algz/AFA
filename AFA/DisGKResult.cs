@@ -39,8 +39,15 @@ namespace AFA
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pointYCollection"></param>
+        /// <param name="isRunRoto">是否运行求解器</param>
         public DisGKResult(TabPage page, Dictionary<int, PointPairList> pointYCollection, bool isRunRoto = true)
         {
+            
             InitializeComponent();
 
             this.page = page;
@@ -107,8 +114,105 @@ namespace AFA
                 thread.IsBackground = true;
                 thread.Start();
             }
+            else if(pointYCollection.Count!=0)
+            {
+                try
+                {
+                    SyswareDataObject sdo = new SyswareDataObject();
+                    if (SyswareDataObjectUtil.loadFresultData(sdo, Common.GKPath))
+                    {
+                        loadDataGridView(sdo.children[0].children);
+                    }
+                    else
+                    {
+                        MessageBox.Show("文件加载失败");
+                    }
+                    
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("文件格式错误.详细:"+e.Message);
+                }
+
+            }
         }
 
+        private void loadDataGridView(List<SyswareDataObject> sdoList)
+        {
+            int i=this.dataGridView1.Rows.Add();
+            this.dataGridView1.Rows[i].Cells[0].Value = "迭代步数:" + sdoList[0].value;
+            this.dataGridView1.Rows[i].Cells[1].Value = "密度残值:" + sdoList[1].value;
+
+            #region 全机气动载荷
+            i = this.dataGridView1.Rows.Add();
+            this.dataGridView1.Rows[i].Cells[0].Value = "全机气动载荷:";
+            i = this.dataGridView1.Rows.Add();
+            this.dataGridView1.Rows[i].Cells[0].Value = "全机X方向力";
+            this.dataGridView1.Rows[i].Cells[1].Value = "全机Y方向力";
+            this.dataGridView1.Rows[i].Cells[2].Value = "全机Z方向力" ;
+            this.dataGridView1.Rows[i].Cells[3].Value = "全机X方向力矩";
+            this.dataGridView1.Rows[i].Cells[4].Value = "全机Y方向力矩" ;
+            this.dataGridView1.Rows[i].Cells[5].Value = "全机Z方向力矩" ;
+            i = this.dataGridView1.Rows.Add();
+            this.dataGridView1.Rows[i].Cells[0].Value =   sdoList[2].children[0].value;
+            this.dataGridView1.Rows[i].Cells[1].Value =   sdoList[2].children[1].value;
+            this.dataGridView1.Rows[i].Cells[2].Value =   sdoList[2].children[2].value;
+            this.dataGridView1.Rows[i].Cells[3].Value =  sdoList[2].children[3].value;
+            this.dataGridView1.Rows[i].Cells[4].Value =  sdoList[2].children[4].value;
+            this.dataGridView1.Rows[i].Cells[5].Value =  sdoList[2].children[5].value;
+            #endregion
+
+            #region 旋翼气动载荷
+            i = this.dataGridView1.Rows.Add();
+            this.dataGridView1.Rows[i].Cells[0].Value = "旋翼气动载荷:";
+            i = this.dataGridView1.Rows.Add();
+            this.dataGridView1.Rows[i].Cells[0].Value = "编号";
+            this.dataGridView1.Rows[i].Cells[1].Value =  "旋翼拉力系数";
+            this.dataGridView1.Rows[i].Cells[2].Value =  "旋翼扭矩系数";
+            this.dataGridView1.Rows[i].Cells[3].Value =  "旋翼滚转力矩系数";
+            this.dataGridView1.Rows[i].Cells[4].Value =  "旋翼俯仰力矩系数";
+            for (int j = 0; j < sdoList[3].children.Count; j++)
+            {
+                SyswareDataObject tem = sdoList[3].children[j];
+
+                i = this.dataGridView1.Rows.Add();
+                this.dataGridView1.Rows[i].Cells[0].Value = j+1;
+                this.dataGridView1.Rows[i].Cells[1].Value =  tem.children[0].value;
+                this.dataGridView1.Rows[i].Cells[2].Value =  tem.children[1].value;
+                this.dataGridView1.Rows[i].Cells[3].Value =  tem.children[2].value;
+                this.dataGridView1.Rows[i].Cells[4].Value =  tem.children[3].value;
+                //this.dataGridView1.Rows[i].Cells[4].Value = (j + 1) + "号旋翼Y方向力矩:" + (tem.children.Count==5?tem.children[4].value:"");
+                //this.dataGridView1.Rows[i].Cells[4].Value = (j + 1) + "号旋翼Z方向力矩:" + (tem.children.Count == 6 ? tem.children[5].value : "");
+            }
+
+            #endregion
+
+            #region 分部件气动载荷
+            i = this.dataGridView1.Rows.Add();
+            this.dataGridView1.Rows[i].Cells[0].Value = "分部件气动载荷:";
+            i = this.dataGridView1.Rows.Add();
+            this.dataGridView1.Rows[i].Cells[0].Value ="编号";
+            this.dataGridView1.Rows[i].Cells[1].Value = "物面X方向力";
+            this.dataGridView1.Rows[i].Cells[2].Value = "物面Y方向力";
+            this.dataGridView1.Rows[i].Cells[3].Value = "物面Z方向力";
+            this.dataGridView1.Rows[i].Cells[4].Value = "物面X方向力矩";
+            this.dataGridView1.Rows[i].Cells[5].Value = "物面Y方向力矩";
+            this.dataGridView1.Rows[i].Cells[6].Value = "物面Z方向力矩";
+            for (int j = 0; j < sdoList[4].children.Count; j++)
+            {
+                SyswareDataObject tem = sdoList[4].children[j];
+
+                i = this.dataGridView1.Rows.Add();
+                this.dataGridView1.Rows[i].Cells[0].Value = j+1;
+                this.dataGridView1.Rows[i].Cells[1].Value =  tem.children[0].value;
+                this.dataGridView1.Rows[i].Cells[2].Value =  tem.children[1].value;
+                this.dataGridView1.Rows[i].Cells[3].Value = tem.children[2].value;
+                this.dataGridView1.Rows[i].Cells[4].Value =  tem.children[3].value;
+                this.dataGridView1.Rows[i].Cells[5].Value =  tem.children[4].value;
+                this.dataGridView1.Rows[i].Cells[6].Value =  tem.children[5].value;
+            }
+            #endregion
+        }
         private void DisGKResult_Load(object sender, EventArgs e)
         {
         }
@@ -134,8 +238,12 @@ namespace AFA
                 {
                     File.Delete(this.currenGKPath + "listen_roto.dat");
                 }
-                if(File.Exists(this.currenGKPath + "listen_roto.temp"))
-                File.Move(this.currenGKPath + "listen_roto.temp", this.currenGKPath + "listen_roto.dat");//更改文件名,用于续算完成后合并成一个文件.
+                if (File.Exists(this.currenGKPath + "listen_roto.temp"))
+                    File.Move(this.currenGKPath + "listen_roto.temp", this.currenGKPath + "listen_roto.dat");//更改文件名,用于续算完成后合并成一个文件.
+            }
+            else
+            {
+
             }
 
             this.calcStateLabel.Text = "计算中.";
@@ -254,6 +362,12 @@ namespace AFA
                 this.process.Kill();
                 MessageBox.Show("工况("+this.page.Text+")停止计算");
             }
+            SyswareDataObject sdo = new SyswareDataObject();
+            if (SyswareDataObjectUtil.loadFresultData(sdo, this.currenGKPath))
+            {
+                loadDataGridView(sdo.children[0].children);
+            }
+            
         }
 
         /// <summary>
@@ -334,6 +448,11 @@ namespace AFA
             MessageBox.Show(msg);
         }
 
+        /// <summary>
+        /// 图表显示类型下拉框选择
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cmbDisType_SelectedValueChanged(object sender, EventArgs e)
         {
             

@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using System.Management;
 
 namespace AFA
 {
@@ -136,25 +137,13 @@ namespace AFA
     public struct Inlet
     {
         /// <summary>
-        /// 进气道出口静压(pa)
+        /// 进气道质量流量(kg/s)
         /// </summary>
-        public string PRESS_OUT1;
+        public string MASSOUT_RATE;
         /// <summary>
-        /// 进气道出口总温(k)
+        /// 总温(k)
         /// </summary>
         public string TEMP_OUT0;
-        /// <summary>
-        /// 喷管入口静压(pa)
-        /// </summary>
-        public string PRESS_IN1;
-        /// <summary>
-        /// 喷管入口总压(pa)
-        /// </summary>
-        public string PRESS_IN0;
-        /// <summary>
-        ///喷管入口总温(k)
-        /// </summary>
-        public string TEMP_IN0;
 
     }
 
@@ -237,6 +226,8 @@ namespace AFA
     }
     class Common
     {
+        public static string GKPath = "";
+
         /// <summary>
         /// 应用程序目录
         /// </summary>
@@ -269,6 +260,28 @@ namespace AFA
         /// 网格文件路径
         /// </summary>
         public static string MESHLOCATION = string.Empty;
+
+        public static string rotorCFD = "";
+        public static string pre_mesh = ""; //普通,不含进气道
+        public static string pre_mesh2 = "";//进气道
+
+        static Common()
+        {
+            switch (Common.Is32bitOr64bitOS())
+            {
+                case "32":
+                    rotorCFD = appFolder+"rotorCFD32.exe";
+                    pre_mesh = appFolder + "pre_mesh_32.exe";
+                    pre_mesh2 = appFolder + "pre_mesh2_32.exe";
+                    break;
+                case "64":
+                    rotorCFD = appFolder + "rotorCFD64.exe";
+                    pre_mesh = appFolder + "pre_mesh_64.exe";
+                    pre_mesh2 = appFolder + "pre_mesh2_64.exe";
+                    break;
+            }
+        }
+
 
         public static bool TestDoubleData(string strData)
         {
@@ -503,10 +516,8 @@ namespace AFA
 
                         #region 进气道
                         sw.WriteLine("AIRINTAKE");
-                        sw.WriteLine("PRESS_OUT1   TEMP_OUT0");
-                        sw.WriteLine(data.inlet.PRESS_OUT1 + " " + data.inlet.TEMP_OUT0);
-                        sw.WriteLine("PRESS_IN1  PRESS_IN0  TEMP_IN0");
-                        sw.WriteLine(data.inlet.PRESS_IN1 + " " + data.inlet.PRESS_IN0 + " " + data.inlet.TEMP_IN0);
+                        sw.WriteLine("MASSOUT_RATE   TEMP_OUT0");
+                        sw.WriteLine(data.inlet.MASSOUT_RATE + " " + data.inlet.TEMP_OUT0);
                         //sw.WriteLine("FLOWRATE");
                         //sw.WriteLine(data.FLOWRATE);
                         sw.WriteLine(sp);
@@ -529,7 +540,7 @@ namespace AFA
                     }
 
                     //拷贝rotorCFD.exe到项目目录下
-                    File.Copy(Common.appFolder + "rotorCFD.exe", strGKDir + "rotorCFD.exe", true);
+                    File.Copy(Common.rotorCFD, strGKDir + "rotorCFD.exe", true);
                 }
             }
             catch (Exception ex)
@@ -545,22 +556,22 @@ namespace AFA
         /// <summary>
         /// 判断OS位数
         /// </summary>
-        /// <returns>32或64</returns>
+        /// <returns>32/64</returns>
         public static string Is32bitOr64bitOS()
         {
+             ConnectionOptions oConn = new ConnectionOptions();
+             System.Management.ManagementScope oMs = new System.Management.ManagementScope("//localhost", oConn);
+             System.Management.ObjectQuery oQuery = new System.Management.ObjectQuery("select AddressWidth from Win32_Processor");
+             ManagementObjectSearcher oSearcher = new ManagementObjectSearcher(oMs, oQuery);
+             ManagementObjectCollection oReturnCollection = oSearcher.Get();
+            string addressWidth = null;
 
-            return null;
-            //string addressWidth = String.Empty;
-            //ConnectionOptions mConnOption = new ConnectionOptions();
-            //ManagementScope mMs = new ManagementScope("//localhost", mConnOption);
-            //ObjectQuery mQuery = new ObjectQuery("select AddressWidth from Win32_Processor");
-            //ManagementObjectSearcher mSearcher = new ManagementObjectSearcher(mMs, mQuery);
-            //ManagementObjectCollection mObjectCollection = mSearcher.Get();
-            //foreach (ManagementObject mObject in mObjectCollection)
-            //{
-            //    addressWidth = mObject["AddressWidth"].ToString();
-            //}
-            //return addressWidth;
+            foreach (ManagementObject oReturn in oReturnCollection)
+             {
+                 addressWidth = oReturn["AddressWidth"].ToString();
+             }
+
+            return addressWidth;
         }
         
         public static int diskakToCmbdisk(int diskak)
@@ -602,5 +613,10 @@ namespace AFA
             }
             return 1;
         }
+
+
     }
 }
+
+
+

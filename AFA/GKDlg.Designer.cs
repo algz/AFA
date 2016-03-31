@@ -57,16 +57,10 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.inletBox = new System.Windows.Forms.GroupBox();
-            this.TEMP_IN0 = new System.Windows.Forms.TextBox();
-            this.TEMP_OUT0_LBALE = new System.Windows.Forms.Label();
-            this.PRESS_IN0 = new System.Windows.Forms.TextBox();
-            this.PRESS_OUT0_LBALE = new System.Windows.Forms.Label();
-            this.PRESS_IN1 = new System.Windows.Forms.TextBox();
-            this.PRESS_OUT1_LBALE = new System.Windows.Forms.Label();
             this.TEMP_OUT0 = new System.Windows.Forms.TextBox();
             this.TEMP_IN0_LBALE = new System.Windows.Forms.Label();
-            this.PRESS_OUT1 = new System.Windows.Forms.TextBox();
-            this.PRESS_IN1_LBALE = new System.Windows.Forms.Label();
+            this.MASSOUT_RATE = new System.Windows.Forms.TextBox();
+            this.MASSOUT_RATE_LBALE = new System.Windows.Forms.Label();
             this.gbXY = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -405,10 +399,11 @@
             // XYlistView
             // 
             this.XYlistView.BackColor = System.Drawing.SystemColors.Window;
+            this.XYlistView.Dock = System.Windows.Forms.DockStyle.Left;
             this.XYlistView.Location = new System.Drawing.Point(3, 39);
             this.XYlistView.MultiSelect = false;
             this.XYlistView.Name = "XYlistView";
-            this.XYlistView.Size = new System.Drawing.Size(379, 37);
+            this.XYlistView.Size = new System.Drawing.Size(379, 43);
             this.XYlistView.TabIndex = 12;
             this.XYlistView.UseCompatibleStateImageBehavior = false;
             this.XYlistView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.XYlistView_DrawItem);
@@ -437,77 +432,20 @@
             // 
             // inletBox
             // 
-            this.inletBox.Controls.Add(this.TEMP_IN0);
-            this.inletBox.Controls.Add(this.TEMP_OUT0_LBALE);
-            this.inletBox.Controls.Add(this.PRESS_IN0);
-            this.inletBox.Controls.Add(this.PRESS_OUT0_LBALE);
-            this.inletBox.Controls.Add(this.PRESS_IN1);
-            this.inletBox.Controls.Add(this.PRESS_OUT1_LBALE);
             this.inletBox.Controls.Add(this.TEMP_OUT0);
             this.inletBox.Controls.Add(this.TEMP_IN0_LBALE);
-            this.inletBox.Controls.Add(this.PRESS_OUT1);
-            this.inletBox.Controls.Add(this.PRESS_IN1_LBALE);
+            this.inletBox.Controls.Add(this.MASSOUT_RATE);
+            this.inletBox.Controls.Add(this.MASSOUT_RATE_LBALE);
             this.inletBox.Location = new System.Drawing.Point(4, 143);
             this.inletBox.Name = "inletBox";
-            this.inletBox.Size = new System.Drawing.Size(792, 68);
+            this.inletBox.Size = new System.Drawing.Size(792, 44);
             this.inletBox.TabIndex = 2;
             this.inletBox.TabStop = false;
             this.inletBox.Text = "进气道数据";
             // 
-            // TEMP_IN0
-            // 
-            this.TEMP_IN0.Location = new System.Drawing.Point(491, 43);
-            this.TEMP_IN0.Name = "TEMP_IN0";
-            this.TEMP_IN0.Size = new System.Drawing.Size(47, 21);
-            this.TEMP_IN0.TabIndex = 11;
-            this.TEMP_IN0.Text = "0";
-            // 
-            // TEMP_OUT0_LBALE
-            // 
-            this.TEMP_OUT0_LBALE.AutoSize = true;
-            this.TEMP_OUT0_LBALE.Location = new System.Drawing.Point(374, 49);
-            this.TEMP_OUT0_LBALE.Name = "TEMP_OUT0_LBALE";
-            this.TEMP_OUT0_LBALE.Size = new System.Drawing.Size(95, 12);
-            this.TEMP_OUT0_LBALE.TabIndex = 10;
-            this.TEMP_OUT0_LBALE.Text = "喷管入口总温(k)";
-            // 
-            // PRESS_IN0
-            // 
-            this.PRESS_IN0.Location = new System.Drawing.Point(321, 43);
-            this.PRESS_IN0.Name = "PRESS_IN0";
-            this.PRESS_IN0.Size = new System.Drawing.Size(47, 21);
-            this.PRESS_IN0.TabIndex = 9;
-            this.PRESS_IN0.Text = "0";
-            // 
-            // PRESS_OUT0_LBALE
-            // 
-            this.PRESS_OUT0_LBALE.AutoSize = true;
-            this.PRESS_OUT0_LBALE.Location = new System.Drawing.Point(190, 46);
-            this.PRESS_OUT0_LBALE.Name = "PRESS_OUT0_LBALE";
-            this.PRESS_OUT0_LBALE.Size = new System.Drawing.Size(101, 12);
-            this.PRESS_OUT0_LBALE.TabIndex = 8;
-            this.PRESS_OUT0_LBALE.Text = "喷管入口总压(pa)";
-            // 
-            // PRESS_IN1
-            // 
-            this.PRESS_IN1.Location = new System.Drawing.Point(137, 40);
-            this.PRESS_IN1.Name = "PRESS_IN1";
-            this.PRESS_IN1.Size = new System.Drawing.Size(47, 21);
-            this.PRESS_IN1.TabIndex = 7;
-            this.PRESS_IN1.Text = "0";
-            // 
-            // PRESS_OUT1_LBALE
-            // 
-            this.PRESS_OUT1_LBALE.AutoSize = true;
-            this.PRESS_OUT1_LBALE.Location = new System.Drawing.Point(6, 43);
-            this.PRESS_OUT1_LBALE.Name = "PRESS_OUT1_LBALE";
-            this.PRESS_OUT1_LBALE.Size = new System.Drawing.Size(101, 12);
-            this.PRESS_OUT1_LBALE.TabIndex = 6;
-            this.PRESS_OUT1_LBALE.Text = "喷管入口静压(pa)";
-            // 
             // TEMP_OUT0
             // 
-            this.TEMP_OUT0.Location = new System.Drawing.Point(321, 14);
+            this.TEMP_OUT0.Location = new System.Drawing.Point(243, 14);
             this.TEMP_OUT0.Name = "TEMP_OUT0";
             this.TEMP_OUT0.Size = new System.Drawing.Size(47, 21);
             this.TEMP_OUT0.TabIndex = 5;
@@ -518,26 +456,26 @@
             this.TEMP_IN0_LBALE.AutoSize = true;
             this.TEMP_IN0_LBALE.Location = new System.Drawing.Point(190, 17);
             this.TEMP_IN0_LBALE.Name = "TEMP_IN0_LBALE";
-            this.TEMP_IN0_LBALE.Size = new System.Drawing.Size(107, 12);
+            this.TEMP_IN0_LBALE.Size = new System.Drawing.Size(47, 12);
             this.TEMP_IN0_LBALE.TabIndex = 4;
-            this.TEMP_IN0_LBALE.Text = "进气道出口总温(k)";
+            this.TEMP_IN0_LBALE.Text = "总温(k)";
             // 
-            // PRESS_OUT1
+            // MASSOUT_RATE
             // 
-            this.PRESS_OUT1.Location = new System.Drawing.Point(137, 14);
-            this.PRESS_OUT1.Name = "PRESS_OUT1";
-            this.PRESS_OUT1.Size = new System.Drawing.Size(47, 21);
-            this.PRESS_OUT1.TabIndex = 3;
-            this.PRESS_OUT1.Text = "0";
+            this.MASSOUT_RATE.Location = new System.Drawing.Point(137, 14);
+            this.MASSOUT_RATE.Name = "MASSOUT_RATE";
+            this.MASSOUT_RATE.Size = new System.Drawing.Size(47, 21);
+            this.MASSOUT_RATE.TabIndex = 3;
+            this.MASSOUT_RATE.Text = "0";
             // 
-            // PRESS_IN1_LBALE
+            // MASSOUT_RATE_LBALE
             // 
-            this.PRESS_IN1_LBALE.AutoSize = true;
-            this.PRESS_IN1_LBALE.Location = new System.Drawing.Point(6, 17);
-            this.PRESS_IN1_LBALE.Name = "PRESS_IN1_LBALE";
-            this.PRESS_IN1_LBALE.Size = new System.Drawing.Size(113, 12);
-            this.PRESS_IN1_LBALE.TabIndex = 2;
-            this.PRESS_IN1_LBALE.Text = "进气道出口静压(pa)";
+            this.MASSOUT_RATE_LBALE.AutoSize = true;
+            this.MASSOUT_RATE_LBALE.Location = new System.Drawing.Point(6, 17);
+            this.MASSOUT_RATE_LBALE.Name = "MASSOUT_RATE_LBALE";
+            this.MASSOUT_RATE_LBALE.Size = new System.Drawing.Size(125, 12);
+            this.MASSOUT_RATE_LBALE.TabIndex = 2;
+            this.MASSOUT_RATE_LBALE.Text = "进气道质量流量(kg/s)";
             // 
             // gbXY
             // 
@@ -545,7 +483,7 @@
             this.gbXY.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbXY.Location = new System.Drawing.Point(3, 3);
             this.gbXY.Name = "gbXY";
-            this.gbXY.Size = new System.Drawing.Size(780, 99);
+            this.gbXY.Size = new System.Drawing.Size(803, 105);
             this.gbXY.TabIndex = 0;
             this.gbXY.TabStop = false;
             this.gbXY.Text = "旋翼列表";
@@ -562,7 +500,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 39F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(774, 79);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(797, 85);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // panel1
@@ -573,7 +511,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(768, 30);
+            this.panel1.Size = new System.Drawing.Size(791, 30);
             this.panel1.TabIndex = 2;
             // 
             // btnAddXY
@@ -863,7 +801,7 @@
             this.dgvYX.RowHeadersVisible = false;
             this.dgvYX.RowTemplate.Height = 23;
             this.dgvYX.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvYX.Size = new System.Drawing.Size(285, 157);
+            this.dgvYX.Size = new System.Drawing.Size(294, 157);
             this.dgvYX.TabIndex = 3;
             this.dgvYX.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvYX_CellMouseDoubleClick);
             // 
@@ -1106,7 +1044,7 @@
             this.gbYSJ.Enabled = false;
             this.gbYSJ.Location = new System.Drawing.Point(0, 0);
             this.gbYSJ.Name = "gbYSJ";
-            this.gbYSJ.Size = new System.Drawing.Size(479, 219);
+            this.gbYSJ.Size = new System.Drawing.Size(493, 219);
             this.gbYSJ.TabIndex = 0;
             this.gbYSJ.TabStop = false;
             this.gbYSJ.Text = "旋翼数据";
@@ -1128,7 +1066,7 @@
             this.groupBox1.Enabled = false;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(297, 219);
+            this.groupBox1.Size = new System.Drawing.Size(306, 219);
             this.groupBox1.TabIndex = 24;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "翼型数据";
@@ -1145,7 +1083,7 @@
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(291, 199);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(300, 199);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // panel2
@@ -1156,15 +1094,16 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(285, 30);
+            this.panel2.Size = new System.Drawing.Size(294, 30);
             this.panel2.TabIndex = 4;
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.tableLayoutPanel3);
-            this.groupBox2.Location = new System.Drawing.Point(3, 223);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(3, 202);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(792, 350);
+            this.groupBox2.Size = new System.Drawing.Size(815, 356);
             this.groupBox2.TabIndex = 25;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "旋翼";
@@ -1181,13 +1120,13 @@
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 225F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(786, 330);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(809, 336);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 108);
+            this.splitContainer1.Location = new System.Drawing.Point(3, 114);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -1197,8 +1136,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer1.Size = new System.Drawing.Size(780, 219);
-            this.splitContainer1.SplitterDistance = 479;
+            this.splitContainer1.Size = new System.Drawing.Size(803, 219);
+            this.splitContainer1.SplitterDistance = 493;
             this.splitContainer1.TabIndex = 1;
             // 
             // tableLayoutPanel4
@@ -1212,10 +1151,10 @@
             this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 3;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 220F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 199F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(821, 618);
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(821, 599);
             this.tableLayoutPanel4.TabIndex = 26;
             // 
             // panel3
@@ -1226,7 +1165,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(3, 3);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(815, 214);
+            this.panel3.Size = new System.Drawing.Size(815, 193);
             this.panel3.TabIndex = 0;
             // 
             // panel4
@@ -1235,16 +1174,16 @@
             this.panel4.Controls.Add(this.btnOK);
             this.panel4.Controls.Add(this.btnCancel);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(3, 585);
+            this.panel4.Location = new System.Drawing.Point(3, 564);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(815, 30);
+            this.panel4.Size = new System.Drawing.Size(815, 32);
             this.panel4.TabIndex = 26;
             // 
             // GKDlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(821, 618);
+            this.ClientSize = new System.Drawing.Size(821, 599);
             this.Controls.Add(this.tableLayoutPanel4);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -1312,16 +1251,10 @@
         private System.Windows.Forms.TextBox tbZMU;
         private System.Windows.Forms.Label label35;
         private System.Windows.Forms.GroupBox inletBox;
-        private System.Windows.Forms.TextBox TEMP_IN0;
-        private System.Windows.Forms.Label TEMP_OUT0_LBALE;
-        private System.Windows.Forms.TextBox PRESS_IN0;
-        private System.Windows.Forms.Label PRESS_OUT0_LBALE;
-        private System.Windows.Forms.TextBox PRESS_IN1;
-        private System.Windows.Forms.Label PRESS_OUT1_LBALE;
         private System.Windows.Forms.TextBox TEMP_OUT0;
         private System.Windows.Forms.Label TEMP_IN0_LBALE;
-        private System.Windows.Forms.TextBox PRESS_OUT1;
-        private System.Windows.Forms.Label PRESS_IN1_LBALE;
+        private System.Windows.Forms.TextBox MASSOUT_RATE;
+        private System.Windows.Forms.Label MASSOUT_RATE_LBALE;
         private System.Windows.Forms.GroupBox gbXY;
         private System.Windows.Forms.TextBox tbRADIUS;
         private System.Windows.Forms.Label label10;

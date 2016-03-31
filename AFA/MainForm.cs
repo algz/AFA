@@ -106,6 +106,7 @@ namespace AFA
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+
             Configuration config = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             KeyValueConfigurationElement element = config.AppSettings.Settings["tecplot360_workDir"];
             if (element != null)
@@ -201,13 +202,12 @@ namespace AFA
                     MessageBox.Show("求解器没有停止无法删除工况!");
                     return;
                 }
-                node.Remove();
+                
                 if (Directory.Exists(Common.prjName +Path.DirectorySeparatorChar+ node.Text))
                 {
                     Directory.Delete(Common.prjName +Path.DirectorySeparatorChar+ node.Text,true);
                 }
                 
-
                 foreach (TabPage page in tabControl1.TabPages)
                 {
                     if (this.treeView1.SelectedNode.Text == page.Text)
@@ -215,6 +215,8 @@ namespace AFA
                         tabControl1.TabPages.Remove(page);
                     }
                 }
+
+                node.Remove();
             }
         }
 
@@ -231,6 +233,8 @@ namespace AFA
                 m_strPrjFile = dlg.m_strPrj + "\\str.prj";
                 this.tsSave.Enabled = true;
                 this.tsSaveAs.Enabled = true;
+
+                Common.GKPath = "";
             }
         }
 
@@ -570,24 +574,12 @@ namespace AFA
                     }
 
                     #region 进气道
-                    velm = doc.CreateElement("PRESS_OUT1");
-                    velm.InnerText = data.inlet.PRESS_OUT1;
+                    velm = doc.CreateElement("MASSOUT_RATE");
+                    velm.InnerText = data.inlet.MASSOUT_RATE;
                     partelm.AppendChild(velm);
 
                     velm = doc.CreateElement("TEMP_OUT0");
                     velm.InnerText = data.inlet.TEMP_OUT0;
-                    partelm.AppendChild(velm);
-
-                    velm = doc.CreateElement("PRESS_IN1");
-                    velm.InnerText = data.inlet.PRESS_IN1;
-                    partelm.AppendChild(velm);
-
-                    velm = doc.CreateElement("PRESS_IN0");
-                    velm.InnerText = data.inlet.PRESS_IN0;
-                    partelm.AppendChild(velm);
-
-                    velm = doc.CreateElement("TEMP_IN0");
-                    velm.InnerText = data.inlet.TEMP_IN0;
                     partelm.AppendChild(velm);
 
                     #endregion
@@ -714,11 +706,8 @@ namespace AFA
                     }
 
                     #region 进气道
-                    data.inlet.PRESS_OUT1 = GetNodeText(root, "工况", NumName, "PRESS_OUT1", string.Empty);
+                    data.inlet.MASSOUT_RATE = GetNodeText(root, "工况", NumName, "MASSOUT_RATE", string.Empty);
                     data.inlet.TEMP_OUT0 = GetNodeText(root, "工况", NumName, "TEMP_OUT0", string.Empty);
-                    data.inlet.PRESS_IN1 = GetNodeText(root, "工况", NumName, "PRESS_IN1", string.Empty);
-                    data.inlet.PRESS_IN0 = GetNodeText(root, "工况", NumName, "PRESS_IN0", string.Empty);
-                    data.inlet.TEMP_IN0 = GetNodeText(root, "工况", NumName, "TEMP_IN0", string.Empty);
                     #endregion
 
                     AFATreeNode node = null;
@@ -811,7 +800,8 @@ namespace AFA
                 {
 
                     TreeNode node = GKNode.Nodes[i];
-                    string GKPath = Common.prjName + Path.DirectorySeparatorChar + node.Text + Path.DirectorySeparatorChar;
+                    Common.GKPath = Common.prjName + Path.DirectorySeparatorChar + node.Text + Path.DirectorySeparatorChar;
+                    string GKPath = Common.GKPath;
                     if (!Directory.Exists(GKPath))
                     {
                         continue;
@@ -835,20 +825,23 @@ namespace AFA
 
                     //mainForm.Controls.Find("tabControl1", true)[0].Controls.Add(m_tabPage);
 
+                    #region 加载上次运行图画
                     Dictionary<int, PointPairList> pointYCollection = new Dictionary<int, PointPairList>();
-
-                    //读取listen_roto.dat数据并加载画图.
-                    string s = "";
-                    string[] arr = null;
-                    using (FileStream fs = File.Open(GKPath + "listen_roto.dat", FileMode.OpenOrCreate, FileAccess.Read))
+                    string[] arr = new string[5];
+                    SyswareDataObject sdo = new SyswareDataObject();
+                    try
                     {
-                        using (StreamReader sr = new StreamReader(fs))
+
+                        if (SyswareDataObjectUtil.loadFresultData(sdo, GKPath, false, true))
                         {
-                            while (!sr.EndOfStream)
+                            sdo = sdo.children[0];
+                            foreach (SyswareDataObject tem in sdo.children)
                             {
-                                s = sr.ReadLine();
-                                arr = s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                                //disGKResult1.drawGraph(arr);
+                                arr[0] = tem.children[0].value;
+                                arr[1] = tem.children[1].value;
+                                arr[2] = tem.children[2].children[2].value;
+                                arr[3] = tem.children[2].children[0].value;
+                                arr[4] = tem.children[3].children[0].children[2].value;
 
                                 for (int j = 1; j < arr.Length; j++)
                                 {
@@ -870,10 +863,22 @@ namespace AFA
                                 }
                             }
                         }
+                        else
+                        {
+                            MessageBox.Show("文件加载失败");
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("文件格式错误.详细:" + ex.Message);
+                        return;
+                    }
+
+                    
 
                     DisGKResult disGKResult1 = new DisGKResult(m_tabPage, pointYCollection, false);
                     disGKResult1.drawGraph(arr);
+                    #endregion
 
                     m_tabPage.Controls.Add(disGKResult1);
                     disGKResult1.Dock = DockStyle.Fill;

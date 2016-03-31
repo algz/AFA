@@ -34,6 +34,8 @@ namespace AFA
             this.selGKNodes = GKNodes;
         }
 
+
+
         private void LoadingForm_Load(object sender, EventArgs e)
         {
             //this.BackColor = Color.White;
@@ -56,14 +58,14 @@ namespace AFA
         private void loadData(object obj)
         {
             #region  工况数据保存为CFD文件.
-            if (!Common.SaveToCFDIN(this.selGKNodes))
+            if (this.selGKNodes.Count==0||!Common.SaveToCFDIN(this.selGKNodes))
             {
                 return;
             }
             #endregion
 
             #region 进行预处理,将网格文件.msh复制并改名到项目下.
-            preProcess();
+            preProcess((sGK)this.selGKNodes[0].Tag);
             #endregion
         }
 
@@ -74,13 +76,13 @@ namespace AFA
         /// <summary>
         /// 进行预处理,将网格文件.msh复制并改名到项目下,调用Cpp2转换网格为FUSELAGE.DAT文件.
         /// </summary>
-        private void preProcess()
+        private void preProcess(sGK gk)
         {
             //FileInfo fInfo;
             //string strFuselage = Common.prjName + "GRID.dat";
             string grid = Common.prjName + "\\GRID.dat"; //网格文件
             string fu_plot = Common.prjName + "\\SURFACE.DAT"; //物面网格文件
-            File.Copy(Common.appFolder + "pre_mesh.exe", Common.prjName + "\\pre_mesh.exe", true);//更新预处理文件
+            File.Copy(gk.MODEL == "101" || gk.MODEL == "111"?Common.pre_mesh2:Common.pre_mesh, Common.prjName + "\\pre_mesh.exe", true);//更新预处理文件
             if (!File.Exists(grid)||!File.Exists(fu_plot))
             {//FUSELAGE.dat存在，说明已经转换过了。
                 if (string.Compare(Common.prjName + "\\rotorwing_gambit.msh", Common.MESHLOCATION, true) != 0)
@@ -118,7 +120,7 @@ namespace AFA
             {
                 this.dataText.Text = outLine.Data;
 
-                if (data.Contains("物面个数："))
+                if (data.Contains("num of walls"))
                 {
                     
                     this.dataText.Text = "准备工况文件......";
@@ -178,6 +180,19 @@ namespace AFA
             {
                 proc.Kill();
             }
+        }
+
+        /// <summary>
+        /// 屏蔽关闭按钮功能,显示但无法关闭.
+        /// </summary>
+        /// <param name="m"></param>
+        protected override void WndProc(ref   Message m)
+        {
+            const int WM_SYSCOMMAND = 0x0112;
+            const int SC_CLOSE = 0xF060;
+            if (m.Msg == WM_SYSCOMMAND && (int)m.WParam == SC_CLOSE)
+            { return; }
+            base.WndProc(ref   m);
         }
     }
 }
